@@ -11,8 +11,10 @@ def check_email(email: str) -> bool:
     email = email.replace(' ', '').strip()
     requeriments = ('.com', '@')
     for i in requeriments:
-        if i in email:
-            pass
-        else:
+        if i not in email:
             return False
     return True
+
+
+if __name__ == '__main__':
+    print(check_email('macelo@macelo.com'))
