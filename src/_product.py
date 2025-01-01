@@ -1,3 +1,6 @@
+from _databases import DataBases
+from datetime import datetime
+
 """
 1. Produto
 - Atributos: id, nome, preco, quantidade.
@@ -8,21 +11,38 @@
 - listar_produtos()
 """
 
+db = DataBases()
 
 class Product:
 
-    counter_id = 0
 
     def __init__(self, name: str, price: int, quantity: int):
-        self.__id = Product.counter_id + 1
         self.__name = name
         self.__price = price
         self.__quantity = quantity
-        Product.counter_id = self.__id
 
 
     def add_product(self):
-        pass
+        if self.__name is None or self.__price is None or self.__quantity is None:
+            raise ValueError("Dados do produto invalidos!")
+        
+        cursor = db.get_cursor
+        cursor.execute(
+            """
+            INSERT into Product (ProductName, ProductPrice, ProductQuantity, CreateAT, Alteration) VALUES
+            (?, ?, ?, ?, ?);
+            """, (
+                self.__name, 
+                self.__price, 
+                self.__quantity,
+                datetime.now().strftime("%Y/%m/%d - %H:%M:%S"),
+                datetime.now().strftime("%Y/%m/%d - %H:%M:%S"))
+        )
+
+        db.commit_changes()
+
+        db.close_connetion()
+        
 
     def edit_product(self):
         pass
@@ -32,3 +52,9 @@ class Product:
 
     def list_product(self):
         pass
+
+
+if __name__ == "__main__":
+    p1 = Product("Coca-cola", 10, 100)
+
+    p1.add_product()

@@ -8,6 +8,7 @@ class DataBases:
 
         db_path = os.path.join(os.getcwd().replace('src', 'databases\\'), 'commerce.db')
         self.__conn = sql.connect(db_path)
+        self.create_table()
 
     def create_table(self):
         """

@@ -44,6 +44,8 @@ class Client:
 
         db.commit_changes()
 
+        db.close_connetion()
+
     def edit_client(self):
         pass
 
