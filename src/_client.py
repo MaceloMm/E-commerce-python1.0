@@ -1,5 +1,7 @@
-
 from src._functions import check_email
+from src._databases import DataBases
+from datetime import datetime
+import json
 
 """
 - Atributos: id, nome, email, endereco.
@@ -9,6 +11,8 @@ from src._functions import check_email
 - remover_cliente()
 - listar_clientes()
 """
+
+db = DataBases()
 
 
 class Client:
@@ -21,7 +25,24 @@ class Client:
         self.__endereco = endereco
 
     def insert_client(self):
-        pass
+
+        if self.__name is None or self.__email is None or self.__endereco is None:
+            raise ValueError('Dados do cliente invalidos!')
+
+        cursor = db.get_cursor
+
+        cursor.execute(
+            """
+            INSERT into Client (ClientName, ClientEmail, ClientLocation, CreateAT, Alteration) VALUES
+            (?, ?, ?, ?, ?);
+            """, (
+                self.__name,
+                self.__email, json.dumps(self.__endereco),
+                datetime.now().strftime("%Y/%m/%d - %H:%M:%S"),
+                datetime.now().strftime("%Y/%m/%d - %H:%M:%S"))
+        )
+
+        db.commit_changes()
 
     def edit_client(self):
         pass
@@ -59,6 +80,4 @@ class Client:
 if __name__ == '__main__':
     cliente = Client('Macelo', 'Macelo@gmail.com', {'bairro': 'COHAB 2', 'Numero': '192', 'Rua': 'tatui', 'CEP': '06326-455'})
 
-    print(cliente.name)
-    cliente.name = 'Macelo Augusto'
-    print(cliente.name)
+    cliente.insert_client()
