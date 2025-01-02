@@ -126,6 +126,7 @@ class Product:
         cursor.execute("SELECT ProductID, ProductName, ProductPrice, ProductQuantity FROM Product;")
   
         result = cursor.fetchall()
+        print(result)
         for res in result:
             print(f"ID: {res[0]}, Nome: {res[1]}, Preço: {res[2]}, Quantidade: {res[3]}")
 
@@ -133,5 +134,4 @@ class Product:
 
         
 if __name__ == "__main__":
-    
-    Product.edit_product()
+    Product.list_product()

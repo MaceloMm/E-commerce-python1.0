@@ -62,7 +62,6 @@ class DataBases:
         return self.__conn.cursor()
 
 
-
 if __name__ == "__main__":
     db = DataBases()
     db.create_table()
