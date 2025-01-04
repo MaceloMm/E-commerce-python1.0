@@ -1,7 +1,6 @@
 import tkinter as tk
 from ttkbootstrap import Style
-from _Login_Singup import SingUpScreen, LoginScreen
-from src._client import Client
+from src.interface._Login_Singup import SingUpScreen, LoginScreen
 
 
 class Application(tk.Tk):
@@ -42,6 +41,9 @@ class FirstScreen(tk.Frame):
                                   command=lambda: Application.show_frame(master, SingUpScreen)
                                   )
         button_singup.grid(row=2, column=1, pady=10)
+
+
+root = Application()
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ class DataBases:
 
     def __init__(self):
 
-        db_path = os.path.join(os.getcwd().replace('src', 'databases\\'), 'commerce.db')
+        db_path = os.path.join(os.getcwd().replace('interface', '').replace('src', 'databases\\'), 'commerce.db')
         self.__conn = sql.connect(db_path)
         self.create_table()
 

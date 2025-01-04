@@ -1,4 +1,5 @@
 import tkinter as tk
+from src.interface._clients import ScreenClient
 
 
 class SingUpScreen(tk.Frame):
@@ -8,6 +9,10 @@ class SingUpScreen(tk.Frame):
 
         label = tk.Label(self, text='Cadastro', font=30)
         label.pack(pady=10, padx=10)
+
+        button = tk.Button(self, text='Clique aqui',
+                           command=lambda: master.show_frame(ScreenClient))
+        button.pack(pady=10, padx=10)
 
 
 class LoginScreen(tk.Frame):
