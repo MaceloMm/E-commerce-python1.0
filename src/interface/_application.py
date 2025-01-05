@@ -9,7 +9,7 @@ class Application(tk.Tk):
         super().__init__()
 
         self.title('Onyx Soluctions Store')
-        self.geometry('600x600')
+        self.geometry('700x500')
 
         Style(theme='darkly')
 

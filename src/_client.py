@@ -134,11 +134,12 @@ class Client:
 
         list_client = Client.cursor.execute(
             """
-            SELECT ClientName, ClientEmail, ClientLocation FROM Client;
+            SELECT ClientID, ClientName, ClientEmail, ClientLocation FROM Client;
             """
         ).fetchall()
 
-        return (i for i in list_client)
+        print('estou sendo executado')
+        return list(list_client)
 
     @staticmethod
     def validation_client() -> bool:
@@ -152,7 +153,6 @@ class Client:
         if ids:
             return True
         return False
-
 
     @property
     def name(self):
@@ -185,5 +185,4 @@ if __name__ == '__main__':
     # cliente2.insert_client()
     # print(Client.validation_client())
     # cliente.delete_client(1)
-    print(Client.edit_client(1, 'Macelo Augusto', 'macelo@gmail.com', {'bairro': 'COHAB 1', 'Numero': '193', 'Rua': 'tatui', 'CEP': '06326-455'}))
-
+    print(list(Client.list_client()))
