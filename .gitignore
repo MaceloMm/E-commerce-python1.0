@@ -1,2 +1,3 @@
 commerce.db
-src/__pycache__/_databases.cpython-312.pyc
+src/__pycache__/
+venv/
