@@ -23,6 +23,9 @@ class Application(tk.Tk):
         self.current_frame = frame_class(self)
         self.current_frame.place(relx=0.5, rely=0.5, anchor='center')
 
+    def initial_frame(self):
+        Application.show_frame(self, FirstScreen)
+
 
 class FirstScreen(tk.Frame):
 

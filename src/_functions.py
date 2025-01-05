@@ -1,4 +1,4 @@
-
+from datetime import datetime
 
 def check_email(email: str) -> bool:
     """
@@ -14,6 +14,10 @@ def check_email(email: str) -> bool:
         if i not in email:
             return False
     return True
+
+
+def set_time():
+    return datetime.now().strftime("%Y/%m/%dT| %H:%M:%S")
 
 
 if __name__ == '__main__':

@@ -1,6 +1,5 @@
-from src._functions import check_email
+from src._functions import check_email, set_time
 from src._databases import DataBases
-from datetime import datetime
 import json
 
 """
@@ -40,6 +39,8 @@ class Client:
         if self.__email in (i[0] for i in emails):
             return 'Este email já foi cadastrado'
 
+        creat_at = set_time()
+
         Client.cursor.execute(
             """
             INSERT into Client (ClientName, ClientEmail, ClientLocation, CreateAT, Alteration) VALUES
@@ -47,8 +48,8 @@ class Client:
             """, (
                 self.__name,
                 self.__email, json.dumps(self.__endereco),
-                datetime.now().strftime("%Y/%m/%dT| %H:%M:%S"),
-                datetime.now().strftime("%Y/%m/%dT| %H:%M:%S"))
+                creat_at,
+                creat_at)
         )
 
         db.commit_changes()
@@ -76,10 +77,12 @@ class Client:
         updates = {}
         if new_name:
             updates["ClientName"] = new_name
-        elif new_email:
+        if new_email:
             updates["ClientEmail"] = new_email
-        elif new_adress:
+        if new_adress:
             updates["ClientLocation"] = json.dumps(new_adress)
+
+        updates["Alteration"] = set_time()
 
         # caso nenhuma seja encontrada ira jogar um erro informando que nenhum campo foi preenchido
         if not updates:
@@ -176,10 +179,11 @@ class Client:
 
 # Apenas para testes
 if __name__ == '__main__':
-    cliente = Client('Macelo', 'Macelo@gmail.com', {'bairro': 'COHAB 2', 'Numero': '192', 'Rua': 'tatui', 'CEP': '06326-455'})
-    cliente.insert_client()
-    cliente2 = Client('Luciana', 'Luciana@gmail.com', {'bairro': 'COHAB 2', 'Numero': '192', 'Rua': 'tatui', 'CEP': '06326-455'})
-    cliente2.insert_client()
-    print(Client.validation_client())
+    # cliente = Client('Macelo', 'Macelo@gmail.com', {'bairro': 'COHAB 2', 'Numero': '192', 'Rua': 'tatui', 'CEP': '06326-455'})
+    # cliente.insert_client()
+    # cliente2 = Client('Luciana', 'Luciana@gmail.com', {'bairro': 'COHAB 2', 'Numero': '192', 'Rua': 'tatui', 'CEP': '06326-455'})
+    # cliente2.insert_client()
+    # print(Client.validation_client())
     # cliente.delete_client(1)
+    print(Client.edit_client(1, 'Macelo Augusto', 'macelo@gmail.com', {'bairro': 'COHAB 1', 'Numero': '193', 'Rua': 'tatui', 'CEP': '06326-455'}))
 
