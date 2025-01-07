@@ -43,13 +43,14 @@ class Client:
 
         Client.cursor.execute(
             """
-            INSERT into Client (ClientName, ClientEmail, ClientLocation, CreateAT, Alteration) VALUES
-            (?, ?, ?, ?, ?);
+            INSERT into Client (ClientName, ClientEmail, ClientLocation, CreateAT, Alteration, Status) VALUES
+            (?, ?, ?, ?, ?, ?);
             """, (
                 self.__name,
                 self.__email, json.dumps(self.__endereco),
                 creat_at,
-                creat_at)
+                creat_at,
+                True)
         )
 
         db.commit_changes()
@@ -67,8 +68,6 @@ class Client:
         :param new_adress: Parametro Opcional do metodo caso queira alterar o endereço do cliente
         :return: Retorna um mensagem que a alteração foi realizada com sucesso.
         """
-
-        cursor = db.get_cursor
 
         if clientid <= 0:
             raise ValueError('ID de client invalido')
@@ -130,7 +129,7 @@ class Client:
         return f'Cliente {usuario} deletado com sucesso!'
 
     @staticmethod
-    def list_client():
+    def list_client() -> list:
 
         list_client = Client.cursor.execute(
             """
@@ -138,7 +137,6 @@ class Client:
             """
         ).fetchall()
 
-        print('estou sendo executado')
         return list(list_client)
 
     @staticmethod
@@ -153,6 +151,14 @@ class Client:
         if ids:
             return True
         return False
+
+    @staticmethod
+    def search_client(clientid: int) -> str:
+        name_client = Client.cursor.execute(
+            'SELECT ClientName FROM Client WHERE ClientID = ?', (clientid,)
+        ).fetchone()[0]
+
+        return name_client
 
     @property
     def name(self):
@@ -179,10 +185,9 @@ class Client:
 
 # Apenas para testes
 if __name__ == '__main__':
-    # cliente = Client('Macelo', 'Macelo@gmail.com', {'bairro': 'COHAB 2', 'Numero': '192', 'Rua': 'tatui', 'CEP': '06326-455'})
     # cliente.insert_client()
-    # cliente2 = Client('Luciana', 'Luciana@gmail.com', {'bairro': 'COHAB 2', 'Numero': '192', 'Rua': 'tatui', 'CEP': '06326-455'})
-    # cliente2.insert_client()
-    # print(Client.validation_client())
+    cliente2 = Client('Luciana', 'luciana@gmail.com', {'CEP': 'teste', 'Rua': 'teste', 'Numero': 'teste'})
+    cliente2.insert_client()
+    #print(Client.validation_client())
     # cliente.delete_client(1)
     print(list(Client.list_client()))

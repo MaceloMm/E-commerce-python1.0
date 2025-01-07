@@ -1,7 +1,5 @@
 from _databases import DataBases
-from sqlite3 import DatabaseError
 from _functions import set_time
-from typing import Union
 
 """
 1. Produto
@@ -14,6 +12,7 @@ from typing import Union
 """
 
 db = DataBases()
+
 
 class Product:
 
@@ -46,14 +45,13 @@ class Product:
 
         return f"Produto '{self.__name}' adicionado com sucesso!"
 
-
     # Método está OK    
     @staticmethod
-    def edit_product(product_id: int, new_name: str = None, new_price: int = None, new_quantity: int = None) -> Union [str, int]:
+    def edit_product(product_id: int, new_name: str = None, new_price: int = None, new_quantity: int = None) -> str:
         """
         Método responsável por realizar as alterações dentro dos cadastros dos produtos.
 
-        :param produt_id: ID do produto cadastrado no banco
+        :param product_id: ID do produto cadastrado no banco
         :param new_name: Parâmetro Opcional do método caso queira alterar o nome do produto
         :param new_price: Parâmetro Opcional do método caso queira alterar o preço do produto
         :param new_quantity: Parâmetro Opcional do método caso queira alterar a quantidade do produto em estoque
@@ -86,10 +84,9 @@ class Product:
 
         return 'Alteração realizada com sucesso!'
 
-
     # Método está OK
     @staticmethod
-    def delete_product(product_id: int) -> int:
+    def delete_product(product_id: int) -> str:
         
         if product_id <= 0:
             raise ValueError("ID do produto inválido!")
@@ -118,17 +115,16 @@ class Product:
 
         return f"Produto '{product}' deletado com sucesso!"
 
-    
     # Método está OK
     @staticmethod
-    def list_product():
+    def list_product() -> list:
         
-        result = Product.cursor.execute("SELECT ProductID, ProductName, ProductPrice, ProductQuantity FROM Product;").fetchall()
+        result = Product.cursor.execute(
+            "SELECT ProductID, ProductName, ProductPrice, ProductQuantity FROM Product;").fetchall()
         
-        return [res for res in result]
+        return list(result)
 
        
 if __name__ == "__main__":
     Product.list_product()
-
-print(Product.list_product())
+    print(Product.list_product())

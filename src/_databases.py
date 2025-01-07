@@ -5,8 +5,8 @@ import sqlite3 as sql
 class DataBases:
 
     def __init__(self):
-
-        db_path = os.path.join(os.getcwd().replace('interface', '').replace('src', 'databases\\'), 'commerce.db')
+        db_path = os.path.join(
+            os.getcwd().replace('interface', '').replace('src', ''), 'databases\\commerce.db')
         self.__conn = sql.connect(db_path)
         self.create_table()
 
@@ -40,7 +40,8 @@ class DataBases:
             ClientEmail TEXT,
             ClientLocation TEXT,
             CreateAT TEXT,
-            Alteration TEXT);
+            Alteration TEXT,
+            Status BOOL);
             """
         )
 
