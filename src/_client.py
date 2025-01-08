@@ -108,18 +108,13 @@ class Client:
         if clientid <= 0:
             raise ValueError("ID do cliente invalido!")
 
-        usuario = Client.cursor.execute(
-            """
-            SELECT ClientName FROM Client WHERE ClientID = ?
-            """, (
-                clientid,
-            )
-        ).fetchone()[0]
+        usuario = Client.search_client(clientid)
 
         Client.cursor.execute(
             """
-            DELETE FROM Client WHERE ClientID = ?
+            UPDATE Client SET Status = ? WHERE ClientID = ?;
             """, (
+                False,
                 clientid,
             )
         )
@@ -133,11 +128,11 @@ class Client:
 
         list_client = Client.cursor.execute(
             """
-            SELECT ClientID, ClientName, ClientEmail, ClientLocation FROM Client;
+            SELECT ClientID, ClientName, ClientEmail, ClientLocation, Status FROM Client;
             """
         ).fetchall()
 
-        return list(list_client)
+        return [cliente for cliente in list_client if cliente[4] == 1]
 
     @staticmethod
     def validation_client() -> bool:
@@ -153,10 +148,16 @@ class Client:
         return False
 
     @staticmethod
-    def search_client(clientid: int) -> str:
-        name_client = Client.cursor.execute(
-            'SELECT ClientName FROM Client WHERE ClientID = ?', (clientid,)
-        ).fetchone()[0]
+    def search_client(clientid: int, dados=False) -> str:
+
+        if dados:
+            name_client = Client.cursor.execute(
+                'SELECT ClientName, ClientEmail, ClientLocation FROM Client WHERE ClientID = ?;', (clientid,)
+            )
+        else:
+            name_client = Client.cursor.execute(
+                'SELECT ClientName FROM Client WHERE ClientID = ?', (clientid,)
+            ).fetchone()[0]
 
         return name_client
 
@@ -186,8 +187,8 @@ class Client:
 # Apenas para testes
 if __name__ == '__main__':
     # cliente.insert_client()
-    cliente2 = Client('Luciana', 'luciana@gmail.com', {'CEP': 'teste', 'Rua': 'teste', 'Numero': 'teste'})
-    cliente2.insert_client()
+    #cliente2 = Client('Luciana', 'luciana@gmail.com', {'CEP': 'teste', 'Rua': 'teste', 'Numero': 'teste'})
+    #cliente2.insert_client()
     #print(Client.validation_client())
     # cliente.delete_client(1)
     print(list(Client.list_client()))

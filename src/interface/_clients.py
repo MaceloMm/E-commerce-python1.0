@@ -35,11 +35,11 @@ class ScreenClient(tk.Frame):
 
         dados = Client.list_client()
 
-        for id, nome, email, endereco in dados:
+        for cl_id, nome, email, endereco, status in dados:
             endereco = loads(endereco)
             table.insert(
                 "", tk.END, values=(
-                    id,
+                    cl_id,
                     nome,
                     email,
                     endereco["CEP"],
@@ -106,12 +106,20 @@ class AlterationClientScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        global client_id
+        buttons_fonts = tk.font.Font(size=11, weight='bold')
+        title_font = tk.font.Font(size=14, weight='bold')
 
-        print(client_id)
+        client_dados = list(Client.search_client(client_id, dados=True))[0]
+        client_dados = Client(client_dados[0], client_dados[1], client_dados[2])
 
-        button = tk.Button(self, text='Voltar', command=lambda: master.show_frame(ScreenClient))
-        button.pack(pady=10)
+        button_no = tk.Button(self, text='Não', width=15, height=1, font=buttons_fonts,
+                              command=lambda: back_screen(master))
+        button_no.grid(row=1, column=1)
+
+        def back_screen(master):
+            global client_id
+            client_id = 0
+            master.show_frame(ScreenClient)
 
 
 class DeleteClientScreen(tk.Frame):
@@ -133,7 +141,7 @@ class DeleteClientScreen(tk.Frame):
         button_yes.grid(row=1, column=0)
 
         button_no = tk.Button(self, text='Não', width=15, height=1, font=buttons_fonts,
-                              command=lambda: master.show_frame(ScreenClient))
+                              command=lambda: back_screen(master))
         button_no.grid(row=1, column=1)
 
         def delete_client(c_id, master):
@@ -142,4 +150,10 @@ class DeleteClientScreen(tk.Frame):
             messagebox.showinfo('Info', message=msg)
             client_id = 0
             master.show_frame(ScreenClient)
+
+        def back_screen(master):
+            global client_id
+            client_id = 0
+            master.show_frame(ScreenClient)
+
 
