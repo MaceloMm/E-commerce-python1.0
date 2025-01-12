@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from json import loads
-from src._functions import format_adress
+from src._functions import format_adress, get_cep_infos
 
 client_id = 0
 
@@ -43,8 +43,8 @@ class ScreenClient(tk.Frame):
                     cl_id,
                     nome.title(),
                     email.title(),
-                    endereco["CEP"],
-                    f'{endereco["Rua"].title()} {endereco["Numero"]}'
+                    endereco["cep"],
+                    f'{endereco["logradouro"].title()} {endereco["numero"]}'
             ))
 
         table.pack(fill=tk.BOTH, expand=True)
@@ -102,10 +102,10 @@ class RegisterClientScreen(tk.Frame):
         textprincipal.grid(row=0, column=0, columnspan=6)
 
         label_client_name = tk.Label(self, text='Nome:')
-        label_client_name.grid(row=1, column=0)
+        label_client_name.grid(row=1, column=0, columnspan=2, pady=10, padx=10)
 
         entry_client_name = tk.Entry(self)
-        entry_client_name.grid(row=1, column=1)
+        entry_client_name.grid(row=1, column=2, columnspan=2, pady=10, padx=10)
 
         label_client_email = tk.Label(self, text='Email:')
         label_client_email.grid(row=2, column=0)
@@ -119,12 +119,6 @@ class RegisterClientScreen(tk.Frame):
         entry_client_cep = tk.Entry(self,)
         entry_client_cep.grid(row=3, column=1)
 
-        label_client_rua = tk.Label(self, text='Rua:')
-        label_client_rua.grid(row=3, column=2)
-
-        entry_client_rua = tk.Entry(self)
-        entry_client_rua.grid(row=3, column=3)
-
         label_client_num = tk.Label(self, text='Numero:')
         label_client_num.grid(row=3, column=4)
 
@@ -135,21 +129,28 @@ class RegisterClientScreen(tk.Frame):
                                 command=lambda: get_dados(
                                     name=entry_client_name.get(),
                                     email=entry_client_email.get(),
-                                    adress=format_adress(
-                                        cep=entry_client_cep.get(),
-                                        rua=entry_client_rua.get(),
-                                        num=int(entry_client_num.get())
-                                    )))
+                                    cep=entry_client_cep.get(),
+                                    numero=entry_client_num.get()
+                                    ))
         button_send.grid(row=99, column=0, pady=10)
 
         button = tk.Button(self, text='Voltar', command=lambda: master.show_frame(ScreenClient))
         button.grid(row=99, column=1, pady=10)
 
-        def get_dados(name, email, adress):
-            cl = Client(name, email, adress)
-            cl.insert_client()
-            cl = None
-            print('Cliente cadastrado!')
+        def get_dados(name, email, cep, numero):
+            endereco_incompleto = get_cep_infos(cep)
+            if endereco_incompleto != 'CEP invalido!':
+                adress = format_adress(endereco_incompleto, numero)
+                try:
+                    cl = Client(name, email, adress)
+                except ValueError as err:
+                    messagebox.showerror('Info', message=str(err))
+                else:
+                    cl.insert_client()
+                    cl = None
+                    messagebox.showinfo('Info', message='Cliente cadastrado com Sucesso!')
+            else:
+                messagebox.showerror('Info', message=endereco_incompleto)
 
 
 class AlterationClientScreen(tk.Frame):

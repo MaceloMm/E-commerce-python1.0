@@ -1,4 +1,6 @@
 from datetime import datetime
+import requests
+from typing import Union
 
 
 def check_email(email: str) -> bool:
@@ -17,13 +19,47 @@ def check_email(email: str) -> bool:
     return True
 
 
-def set_time():
+def set_time() -> str:
     return datetime.now().strftime("%Y/%m/%dT| %H:%M:%S")
 
 
-def format_adress(cep: str, rua: str, num: int) -> dict:
-    return {'CEP': cep, 'Rua': rua, 'Numero': num}
+def format_adress(adress: dict, num: int) -> dict:
+    """
+    Fução responsavel por inserir o numero da casa/predio no endereço do cliente
+
+    :param adress: endereço sem o numero
+    :param num: numero da casa/predio
+    :return: retorna o endereço completo do cliente
+    """
+    adress['numero'] = num
+    return adress
+
+
+def get_cep_infos(cep: str) -> Union[str, dict]:
+    """
+    Função responsavel por verificar se o CEP e valido e retorna as informações de
+    (CEP, Logadouro, bairro, localidade, uf, estado)
+
+    :param cep: CEP informado pelo usuario
+    :return: (CEP, Logadouro, bairro, localidade, uf, estado) caso seja invalido retorna que o CPF e invalido
+    """
+    exclude_itens: tuple = ('complemento', 'unidade', 'regiao', 'ibge', 'gia', 'ddd', 'siafi')
+    cep = cep.replace('-', '').replace('.', '').replace(' ', '').strip()
+
+    url = f'https://viacep.com.br/ws/{cep}/json/'
+
+    response = requests.get(url)
+    adress = response.json()
+
+    if response.status_code != 200 or 'erro' in adress:
+        return 'CEP invalido!'
+
+    for i in exclude_itens:
+        adress.pop(i)
+
+    return adress
 
 
 if __name__ == '__main__':
-    print(check_email('macelo@macelo.com'))
+    print(get_cep_infos('06326488'))
+
