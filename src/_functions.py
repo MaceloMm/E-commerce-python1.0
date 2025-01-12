@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def check_email(email: str) -> bool:
     """
     Função responsavel por validar se uma string está em formato de Email.
@@ -18,6 +19,10 @@ def check_email(email: str) -> bool:
 
 def set_time():
     return datetime.now().strftime("%Y/%m/%dT| %H:%M:%S")
+
+
+def format_adress(cep: str, rua: str, num: int) -> dict:
+    return {'CEP': cep, 'Rua': rua, 'Numero': num}
 
 
 if __name__ == '__main__':
