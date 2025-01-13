@@ -10,6 +10,8 @@ class Application(tk.Tk):
 
         self.title('Onyx Soluctions Store')
         self.geometry('700x500')
+        self.maxsize(width=700, height=500)
+        self.minsize(width=700, height=500)
 
         Style(theme='darkly')
 

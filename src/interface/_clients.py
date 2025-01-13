@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from json import loads
-from src._functions import format_adress, get_cep_infos
+from src._functions import format_adress, get_cep_infos, fonts
 
 client_id = 0
 
@@ -13,10 +13,9 @@ class ScreenClient(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        buttons_fonts = tk.font.Font(size=11, weight='bold')
-        title_font = tk.font.Font(size=14, weight='bold')
+        b_font, t_font = fonts()
 
-        texto = tk.Label(self, text='Clientes cadastrados:', font=title_font)
+        texto = tk.Label(self, text='Clientes cadastrados:', font=t_font)
         texto.pack(pady=10, anchor='w')
         # texto.grid(pady=10, row=0, column=0, columnspan=4, sticky='w')
 
@@ -52,19 +51,19 @@ class ScreenClient(tk.Frame):
         frame_teste = tk.Frame(self)
         frame_teste.pack(pady=10)
 
-        button_singup = tk.Button(frame_teste, text='Cadastrar Cliente', font=buttons_fonts, width=15, height=1,
+        button_singup = tk.Button(frame_teste, text='Cadastrar Cliente', font=b_font, width=15, height=1,
                                   command=lambda: master.show_frame(RegisterClientScreen))
         button_singup.grid(pady=10, row=3, column=0, padx=5)
 
-        button_delete = tk.Button(frame_teste, text='Deletar Cliente', font=buttons_fonts, width=15, height=1,
+        button_delete = tk.Button(frame_teste, text='Deletar Cliente', font=b_font, width=15, height=1,
                                   command=lambda: ScreenClient.validation_delete(master))
         button_delete.grid(pady=10, row=3, column=1, padx=5)
 
-        button_alterar = tk.Button(frame_teste, text='Alterar Cadastro', font=buttons_fonts, width=15, height=1,
+        button_alterar = tk.Button(frame_teste, text='Alterar Cadastro', font=b_font, width=15, height=1,
                                    command=lambda: ScreenClient.validation_alteration(master))
         button_alterar.grid(pady=10, row=3, column=2, padx=5)
 
-        button_back = tk.Button(frame_teste, text='Voltar', font=buttons_fonts, width=15, height=1,
+        button_back = tk.Button(frame_teste, text='Voltar', font=b_font, width=15, height=1,
                                 command=lambda: master.initial_frame())
         button_back.grid(pady=10, row=3, column=3, padx=5)
 
@@ -98,34 +97,36 @@ class RegisterClientScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        textprincipal = tk.Label(self, text='Cadastro de Cliente!')
-        textprincipal.grid(row=0, column=0, columnspan=6)
+        b_font, t_font = fonts()
+
+        text_principal = tk.Label(self, text='Cadastro de Cliente!', font=t_font)
+        text_principal.grid(row=0, column=0, columnspan=9, pady=15)
 
         label_client_name = tk.Label(self, text='Nome:')
-        label_client_name.grid(row=1, column=0, columnspan=2, pady=10, padx=10)
+        label_client_name.grid(row=1, column=0, columnspan=1, sticky='w')
 
-        entry_client_name = tk.Entry(self)
-        entry_client_name.grid(row=1, column=2, columnspan=2, pady=10, padx=10)
+        entry_client_name = tk.Entry(self, width=55)
+        entry_client_name.grid(row=2, column=0, columnspan=4, pady=5, sticky='w')
 
         label_client_email = tk.Label(self, text='Email:')
-        label_client_email.grid(row=2, column=0)
+        label_client_email.grid(row=3, column=0, pady=5, columnspan=1, sticky='w')
 
-        entry_client_email = tk.Entry(self)
-        entry_client_email.grid(row=2, column=1)
+        entry_client_email = tk.Entry(self, width=55)
+        entry_client_email.grid(row=4, column=0, pady=5, sticky='w', columnspan=4)
 
         label_client_cep = tk.Label(self, text='CEP:')
-        label_client_cep.grid(row=3, column=0)
+        label_client_cep.grid(row=5, column=0, pady=5, sticky='w')
 
-        entry_client_cep = tk.Entry(self,)
-        entry_client_cep.grid(row=3, column=1)
+        entry_client_cep = tk.Entry(self, width=25)
+        entry_client_cep.grid(row=6, column=0, pady=5, sticky='w')
 
         label_client_num = tk.Label(self, text='Numero:')
-        label_client_num.grid(row=3, column=4)
+        label_client_num.grid(row=5, column=1, pady=5, sticky='w', padx=5)
 
-        entry_client_num = tk.Entry(self)
-        entry_client_num.grid(row=3, column=5)
+        entry_client_num = tk.Entry(self, width=28)
+        entry_client_num.grid(row=6, column=1, pady=5, padx=5)
 
-        button_send = tk.Button(self, text='Enviar',
+        button_send = tk.Button(self, text='Enviar', font=b_font, width=15, height=1,
                                 command=lambda: get_dados(
                                     name=entry_client_name.get(),
                                     email=entry_client_email.get(),
@@ -134,7 +135,8 @@ class RegisterClientScreen(tk.Frame):
                                     ))
         button_send.grid(row=99, column=0, pady=10)
 
-        button = tk.Button(self, text='Voltar', command=lambda: master.show_frame(ScreenClient))
+        button = tk.Button(self, text='Voltar', font=b_font, width=15, height=1,
+                           command=lambda: master.show_frame(ScreenClient))
         button.grid(row=99, column=1, pady=10)
 
         def get_dados(name, email, cep, numero):
@@ -160,13 +162,12 @@ class AlterationClientScreen(tk.Frame):
 
         global client_id
 
-        buttons_fonts = tk.font.Font(size=11, weight='bold')
-        title_font = tk.font.Font(size=14, weight='bold')
+        b_font, f_font = fonts()
 
         client_dados = list(Client.search_client(client_id, dados=True))[0]
         client_dados = Client(client_dados[0], client_dados[1], client_dados[2])
 
-        button_no = tk.Button(self, text='Não', width=15, height=1, font=buttons_fonts,
+        button_no = tk.Button(self, text='Não', width=15, height=1, font=b_font,
                               command=lambda: back_screen(master))
         button_no.grid(row=1, column=1)
 
@@ -181,8 +182,7 @@ class DeleteClientScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        buttons_fonts = tk.font.Font(size=11, weight='bold')
-        title_font = tk.font.Font(size=14, weight='bold')
+        b_font, t_font = fonts()
 
         global client_id
         name_client = Client.search_client(client_id)
@@ -190,11 +190,11 @@ class DeleteClientScreen(tk.Frame):
         label = tk.Label(self, text=f'Tem certeza que deseja deletar o cliente "{name_client}"?')
         label.grid(row=0, column=0, columnspan=2)
 
-        button_yes = tk.Button(self, text='Sim', width=15, height=1, font=buttons_fonts,
+        button_yes = tk.Button(self, text='Sim', width=15, height=1, font=b_font,
                                command=lambda: delete_client(client_id, master))
         button_yes.grid(row=1, column=0)
 
-        button_no = tk.Button(self, text='Não', width=15, height=1, font=buttons_fonts,
+        button_no = tk.Button(self, text='Não', width=15, height=1, font=b_font,
                               command=lambda: back_screen(master))
         button_no.grid(row=1, column=1)
 

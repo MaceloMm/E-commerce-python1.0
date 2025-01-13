@@ -1,6 +1,7 @@
 from datetime import datetime
 import requests
 from typing import Union
+import tkinter as tk
 
 
 def check_email(email: str) -> bool:
@@ -58,6 +59,12 @@ def get_cep_infos(cep: str) -> Union[str, dict]:
         adress.pop(i)
 
     return adress
+
+
+def fonts():
+    buttons_fonts = tk.font.Font(size=11, weight='bold')
+    title_font = tk.font.Font(size=14, weight='bold')
+    return buttons_fonts, title_font
 
 
 if __name__ == '__main__':
