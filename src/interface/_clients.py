@@ -69,6 +69,9 @@ class ScreenClient(tk.Frame):
                                 command=lambda: master.initial_frame())
         button_back.grid(pady=10, row=3, column=3, padx=5)
 
+        # button_info = master.get_button_info()
+        # button_info.config(command=messagebox.showinfo('Teste1', 'Teste1 aaaaaaa'))
+
         def get_dados(event):
             global client_id
 
@@ -176,25 +179,25 @@ class AlterationClientScreen(tk.Frame):
         text_principal = tk.Label(self, text='Alteração de cadastro!', font=t_font)
         text_principal.grid(row=0, column=0, columnspan=9, pady=15)
 
-        label_client_name = tk.Label(self, text=f'Atual: {client_dados.name}')
-        label_client_name.grid(row=1, column=0, columnspan=1, sticky='w')
+        label_client_name = tk.Label(self, text=f'Nome atual: {client_dados.name}')
+        label_client_name.grid(row=1, column=0, columnspan=2, sticky='w')
 
         entry_client_name = tk.Entry(self, width=55)
-        entry_client_name.grid(row=2, column=0, columnspan=4, pady=5, sticky='w')
+        entry_client_name.grid(row=2, column=0, columnspan=2, pady=5, sticky='w')
 
-        label_client_email = tk.Label(self, text=f'Atual: {client_dados.get_email}')
-        label_client_email.grid(row=3, column=0, pady=5, columnspan=1, sticky='w')
+        label_client_email = tk.Label(self, text=f'Email atual: {client_dados.get_email}')
+        label_client_email.grid(row=3, column=0, pady=5, columnspan=2, sticky='w')
 
         entry_client_email = tk.Entry(self, width=55)
-        entry_client_email.grid(row=4, column=0, pady=5, sticky='w', columnspan=4)
+        entry_client_email.grid(row=4, column=0, pady=5, sticky='w', columnspan=2)
 
-        label_client_cep = tk.Label(self, text=f'Atual: {client_dados.get_endereco['cep']}')
+        label_client_cep = tk.Label(self, text=f'CEP atual: {client_dados.get_endereco['cep']}')
         label_client_cep.grid(row=5, column=0, pady=5, sticky='w')
 
         entry_client_cep = tk.Entry(self, width=25)
         entry_client_cep.grid(row=6, column=0, pady=5, sticky='w')
 
-        label_client_num = tk.Label(self, text=f'Atual: {client_dados.get_endereco['numero']}')
+        label_client_num = tk.Label(self, text=f'Numero atual: {client_dados.get_endereco['numero']}')
         label_client_num.grid(row=5, column=1, pady=5, sticky='w', padx=5)
 
         entry_client_num = tk.Entry(self, width=28)
@@ -214,10 +217,37 @@ class AlterationClientScreen(tk.Frame):
                            command=lambda: back_screen(master))
         button.grid(row=99, column=1, pady=10)
 
+        button_info = master.get_button_info()
+
+        button_info.config(command=lambda: messagebox.showinfo('Teste', 'Teste'))
+
         def change_user(master, new_name, new_email, new_cep, new_num):
             global client_id
-            teste = [i for i in [new_name, new_email, new_cep, new_num] if i != '']
-            print(teste)
+
+            if new_name == '' and new_email == '' and new_cep == '' and new_num == '':
+                messagebox.showinfo('Info', 'Nenhum campo preenchido!')
+                return None
+            if new_cep != '' and new_num == '':
+                messagebox.showinfo('Info', 'Para atualizar o Cep digite o numero')
+                return None
+            if new_cep == '' and new_num != '':
+                messagebox.showinfo('Info', 'Para atualizar o numero digite o cep')
+                return None
+
+            new_name = new_name if new_name != '' else None
+            new_email = new_email if new_email != '' else None
+            new_adress = None
+
+            if new_cep != '' and new_num != '':
+                try:
+                    new_adress = format_adress(get_cep_infos(new_cep), new_num)
+                except ValueError:
+                    new_adress = None
+
+            msg = Client.edit_client(client_id, new_name, new_email, new_adress)
+            messagebox.showinfo('Info', msg)
+            client_id = 0
+            master.show_frame(ScreenClient)
 
         def back_screen(master):
             global client_id
@@ -235,8 +265,8 @@ class DeleteClientScreen(tk.Frame):
         global client_id
         name_client = Client.search_client(client_id)
 
-        label = tk.Label(self, text=f'Tem certeza que deseja deletar o cliente "{name_client}"?')
-        label.grid(row=0, column=0, columnspan=2)
+        label = tk.Label(self, text=f'Tem certeza que deseja deletar o cliente "{name_client}"?', font=9)
+        label.grid(row=0, column=0, columnspan=2, pady=15)
 
         button_yes = tk.Button(self, text='Sim', width=15, height=1, font=b_font,
                                command=lambda: delete_client(client_id, master))

@@ -32,6 +32,8 @@ def format_adress(adress: dict, num: int) -> dict:
     :param num: numero da casa/predio
     :return: retorna o endereço completo do cliente
     """
+    if num == '' or num is None:
+        raise ValueError('Numero invalido')
     adress['numero'] = num
     return adress
 
@@ -44,6 +46,10 @@ def get_cep_infos(cep: str) -> Union[str, dict]:
     :param cep: CEP informado pelo usuario
     :return: (CEP, Logadouro, bairro, localidade, uf, estado) caso seja invalido retorna que o CPF e invalido
     """
+
+    if cep == '' or cep is None:
+        raise ValueError('CEP está vazio!')
+
     exclude_itens: tuple = ('complemento', 'unidade', 'regiao', 'ibge', 'gia', 'ddd', 'siafi')
     cep = cep.replace('-', '').replace('.', '').replace(' ', '').strip()
 
