@@ -1,3 +1,5 @@
+import json
+
 from src._client import Client
 import tkinter as tk
 from tkinter import messagebox
@@ -140,6 +142,10 @@ class RegisterClientScreen(tk.Frame):
         button.grid(row=99, column=1, pady=10)
 
         def get_dados(name, email, cep, numero):
+            if name == '' or email == '' or numero == '' or cep == '':
+                messagebox.showinfo('Info', 'Preencha todos os campos')
+                return None
+
             endereco_incompleto = get_cep_infos(cep)
             if endereco_incompleto != 'CEP invalido!':
                 adress = format_adress(endereco_incompleto, numero)
@@ -162,14 +168,56 @@ class AlterationClientScreen(tk.Frame):
 
         global client_id
 
-        b_font, f_font = fonts()
+        b_font, t_font = fonts()
 
         client_dados = list(Client.search_client(client_id, dados=True))[0]
-        client_dados = Client(client_dados[0], client_dados[1], client_dados[2])
+        client_dados = Client(client_dados[0], client_dados[1], json.loads(client_dados[2]))
 
-        button_no = tk.Button(self, text='Não', width=15, height=1, font=b_font,
-                              command=lambda: back_screen(master))
-        button_no.grid(row=1, column=1)
+        text_principal = tk.Label(self, text='Alteração de cadastro!', font=t_font)
+        text_principal.grid(row=0, column=0, columnspan=9, pady=15)
+
+        label_client_name = tk.Label(self, text=f'Atual: {client_dados.name}')
+        label_client_name.grid(row=1, column=0, columnspan=1, sticky='w')
+
+        entry_client_name = tk.Entry(self, width=55)
+        entry_client_name.grid(row=2, column=0, columnspan=4, pady=5, sticky='w')
+
+        label_client_email = tk.Label(self, text=f'Atual: {client_dados.get_email}')
+        label_client_email.grid(row=3, column=0, pady=5, columnspan=1, sticky='w')
+
+        entry_client_email = tk.Entry(self, width=55)
+        entry_client_email.grid(row=4, column=0, pady=5, sticky='w', columnspan=4)
+
+        label_client_cep = tk.Label(self, text=f'Atual: {client_dados.get_endereco['cep']}')
+        label_client_cep.grid(row=5, column=0, pady=5, sticky='w')
+
+        entry_client_cep = tk.Entry(self, width=25)
+        entry_client_cep.grid(row=6, column=0, pady=5, sticky='w')
+
+        label_client_num = tk.Label(self, text=f'Atual: {client_dados.get_endereco['numero']}')
+        label_client_num.grid(row=5, column=1, pady=5, sticky='w', padx=5)
+
+        entry_client_num = tk.Entry(self, width=28)
+        entry_client_num.grid(row=6, column=1, pady=5, padx=5)
+
+        button_send = tk.Button(self, text='Alterar', font=b_font, width=15, height=1,
+                                command=lambda: change_user(
+                                    master,
+                                    entry_client_name.get(),
+                                    entry_client_email.get(),
+                                    entry_client_cep.get(),
+                                    entry_client_num.get()
+                                ))
+        button_send.grid(row=99, column=0, pady=10)
+
+        button = tk.Button(self, text='Voltar', font=b_font, width=15, height=1,
+                           command=lambda: back_screen(master))
+        button.grid(row=99, column=1, pady=10)
+
+        def change_user(master, new_name, new_email, new_cep, new_num):
+            global client_id
+            teste = [i for i in [new_name, new_email, new_cep, new_num] if i != '']
+            print(teste)
 
         def back_screen(master):
             global client_id
@@ -211,3 +259,5 @@ class DeleteClientScreen(tk.Frame):
             master.show_frame(ScreenClient)
 
 
+if __name__ == '__main__':
+    pass
