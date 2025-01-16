@@ -25,9 +25,11 @@ class DataBases:
             ProductID INTEGER primary key autoincrement,
             ProductName TEXT,
             ProductPrice REAL,
-            ProductQuantity INTEGER, 
+            ProductQuantity INTEGER,
+            Category TEXT, 
             CreateAT TEXT,
-            Alteration TEXT);
+            Alteration TEXT,
+            Status BOOL);
             """
         )
 
