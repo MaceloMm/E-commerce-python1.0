@@ -1,36 +1,66 @@
-import tkinter as tk
-from ttkbootstrap import Style
+import customtkinter as tk
+from tkinter import ttk
 from src.interface._Login_Singup import SingUpScreen, LoginScreen
 from src._functions import fonts
+from tkinter import font
 
 
-class Application(tk.Tk):
+class Application(tk.CTk):
 
-    def __init__(self, master=None):
-        super().__init__()
+    def __init__(self):
+        super().__init__(fg_color='#1f1f1f')
 
         self.title('Onyx Soluctions Store')
         self.geometry('700x500')
-        self.maxsize(width=700, height=500)
-        self.minsize(width=700, height=500)
+        self.resizable(False, False)
 
-        Style(theme='cyborg')
-        #Style(theme='darkly')
+        style = ttk.Style()
+        style.theme_use("default")
+        style.configure("Treeview",
+                        background="#1f1f1f",
+                        foreground="#F0F8FF",
+                        fieldbackground="#1f1f1f",
+                        rowheight=25,
+                        bordercolor="#2b2b2b",
+                        borderwidth=2,
+                        font=font.Font(family='Calibri Light'),
+                        )
+        style.map("Treeview",
+                  background=[("selected", "#B0C4DE")],
+                  foreground=[("selected", "#2b2b2b")],
+                  )
+
+        # Configurar os headers
+        style.configure("Treeview.Heading",
+                        background="#1f1f1f",
+                        foreground="#B0C4DE",
+                        font=("Arial", 14, "bold"),
+                        borderwidth=0)
+
+        style.map("Treeview.Heading",
+                  background=[("selected", "#B0C4DE")],
+                  foreground=[("selected", "#2b2b2b")]
+                  )
 
         self.current_frame = None
 
         self.show_frame(FirstScreen)
 
-        b_font, f_font = fonts()
+        b_font, f_font, t_font = fonts()
 
-        self.button_teste = tk.Button(self, text='¡', width=2, font=b_font)
+        self.name_store = tk.CTkLabel(self, text='Onyx Store',
+                                      font=tk.CTkFont(weight='bold', size=30, family='Helvetica'))
+        self.name_store.place(x=25, y=15, anchor='nw')
+
+        self.button_teste = tk.CTkButton(self, text='¡', width=2, font=b_font)
         self.button_teste.place(x=685, y=485, anchor='se')
 
     def show_frame(self, frame_class):
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = frame_class(self)
-        self.current_frame.place(relx=0.5, rely=0.5, anchor='center')
+        self.current_frame.configure(fg_color='#1f1f1f')
+        self.current_frame.place(relx=0.5, rely=0.5, anchor="center")
 
     def initial_frame(self):
         Application.show_frame(self, FirstScreen)
@@ -39,25 +69,39 @@ class Application(tk.Tk):
         return self.button_teste
 
 
-class FirstScreen(tk.Frame):
+class FirstScreen(tk.CTkFrame):
 
     def __init__(self, master):
-        super().__init__(master)
+        super().__init__(master, width=700, height=300)
+        self.configure(fg_color='#1f1f1f')
+        self.grid_propagate(False)
 
-        b_font, t_font = fonts()
+        self.rowconfigure([0, 1, 2, 3, 4], weight=1)
+        self.columnconfigure(0, weight=1)
 
-        principal_text = tk.Label(self, text='Escolha uma das opções:', font=t_font)
-        principal_text.grid(row=0, column=0, pady=10, columnspan=2)
+        b_font, t_font, f_font = fonts()
 
-        button_login = tk.Button(self, text='Login', width=12, height=1, font=b_font,
-                                 command=lambda: Application.show_frame(master, LoginScreen)
-                                 )
-        button_login.grid(row=2, column=0, pady=10)
+        principal_text = tk.CTkLabel(self, text='Escolha uma das opções:', font=t_font)
+        principal_text.grid(row=0, column=0, pady=10)
 
-        button_singup = tk.Button(self, text='Cadastro', width=12, height=1, font=b_font,
-                                  command=lambda: Application.show_frame(master, SingUpScreen)
-                                  )
-        button_singup.grid(row=2, column=1, pady=10)
+        button_login = tk.CTkButton(self, text='Login', font=b_font, width=200, height=30,
+                                    command=lambda: Application.show_frame(master, LoginScreen))
+        button_login.grid(row=1, column=0, pady=5)
+
+        button_singup = tk.CTkButton(self, text='Cadastro', font=b_font, width=200, height=30,
+                                     command=lambda: Application.show_frame(master, SingUpScreen))
+        button_singup.grid(row=2, column=0, pady=5)
+
+        help_button = tk.CTkButton(self, text='Ajuda', font=b_font, width=200, height=30,)
+        help_button.grid(row=3, column=0, pady=5)
+
+        exit_button = tk.CTkButton(self, text='Sair', font=b_font, width=200, height=30,
+                                   command=lambda: exit_application(master))
+        exit_button.grid(row=4, column=0, pady=5)
+
+        def exit_application(app):
+            app.quit()
+            exit(1)
 
 
 root = Application()
@@ -66,4 +110,3 @@ root = Application()
 if __name__ == '__main__':
     root = Application()
     root.mainloop()
-

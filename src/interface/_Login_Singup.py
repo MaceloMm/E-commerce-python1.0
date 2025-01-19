@@ -1,28 +1,25 @@
-import tkinter as tk
+import customtkinter as tk
 from src.interface._clients import ScreenClient
 
 
-class SingUpScreen(tk.Frame):
+class SingUpScreen(tk.CTkFrame):
 
     def __init__(self, master):
         super().__init__(master)
 
-        label = tk.Label(self, text='Cadastro', font=30)
+        label = tk.CTkLabel(self, text='Cadastro')
         label.pack(pady=10, padx=10)
 
-        button = tk.Button(self, text='Clique aqui',
-                           command=lambda: master.show_frame(ScreenClient))
+        button = tk.CTkButton(self, text='Clique aqui', command=lambda: master.show_frame(ScreenClient))
         button.pack(pady=10, padx=10)
 
 
-class LoginScreen(tk.Frame):
+class LoginScreen(tk.CTkFrame):
 
     def __init__(self, master):
         super().__init__(master)
 
-        font_title = tk.font.Font(weight='bold', size=20, family='Arial')
+        font_title = tk.CTkFont(weight='bold', size=20, family='Arial')
 
-        label = tk.Label(self, text='Login', font=font_title)
+        label = tk.CTkLabel(self, text='Login', font=font_title)
         label.grid(row=0, column=0, pady=10, sticky='w')
-
-
