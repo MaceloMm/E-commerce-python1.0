@@ -100,7 +100,7 @@ class RegisterClientScreen(tk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
-        b_font, t_font = fonts()
+        b_font, t_font, f_font = fonts()
 
         text_principal = tk.CTkLabel(self, text='Cadastro de Cliente!', font=t_font)
         text_principal.grid(row=0, column=0, columnspan=9, pady=15)
@@ -134,7 +134,8 @@ class RegisterClientScreen(tk.CTkFrame):
                                     name=entry_client_name.get(),
                                     email=entry_client_email.get(),
                                     cep=entry_client_cep.get(),
-                                    numero=entry_client_num.get()
+                                    numero=entry_client_num.get(),
+                                    master=master
                                     ))
         button_send.grid(row=99, column=0, pady=15)
 
@@ -142,7 +143,7 @@ class RegisterClientScreen(tk.CTkFrame):
                               command=lambda: master.show_frame(ScreenClient))
         button.grid(row=99, column=1, pady=15)
 
-        def get_dados(name, email, cep, numero):
+        def get_dados(name, email, cep, numero, master):
             if name == '' or email == '' or numero == '' or cep == '':
                 messagebox.showinfo('Info', 'Preencha todos os campos')
                 return None
@@ -158,6 +159,7 @@ class RegisterClientScreen(tk.CTkFrame):
                     cl.insert_client()
                     cl = None
                     messagebox.showinfo('Info', message='Cliente cadastrado com Sucesso!')
+                    master.show_frame(ScreenClient)
             else:
                 messagebox.showerror('Info', message=endereco_incompleto)
 
@@ -258,7 +260,7 @@ class DeleteClientScreen(tk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
-        b_font, t_font = fonts()
+        b_font, t_font, f_font = fonts()
 
         global client_id
         name_client = Client.search_client(client_id)
