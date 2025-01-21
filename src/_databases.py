@@ -11,10 +11,10 @@ class DataBases:
         self.create_table()
         self.create_types()
 
-    def create_table(self):
+    def create_table(self) -> None:
         """
 
-        :return:
+        :return: None
         """
 
         self.__conn.execute("PRAGMA foreign_keys = ON")
@@ -32,7 +32,7 @@ class DataBases:
             Category TEXT NOT NULL, 
             CreateAT TEXT NOT NULL,
             Alteration TEXT NOT NULL,
-            Status INTEGER NOT NULL
+            Status BOOL NOT NULL
             );
             """
         )
@@ -47,7 +47,7 @@ class DataBases:
             ClientLocation TEXT NOT NULL,
             CreateAT TEXT NOT NULL,
             Alteration TEXT NOT NULL,
-            Status INTEGER NOT NULL
+            Status BOOL NOT NULL
             );
             """
         )
@@ -55,7 +55,15 @@ class DataBases:
         # Tabela de Pedidos
         cursor.execute(
             """
-            
+            CREATE TABLE if not exists Orders(
+            OrderID INTEGER primary key autoincrement,
+            ClientID INTEGER NOT NULL,
+            TotalProducts TEXT NOT NULL,
+            Total REAL,
+            CreateAT TEXT NOT NULL,
+            Alteration TEXT NOT NULL,
+            FOREIGN KEY (ClientID) REFERENCES TypeUsers (ClientID) ON DELETE CASCADE 
+            );
             """
         )
 
@@ -64,10 +72,12 @@ class DataBases:
             """
             CREATE TABLE if not exists users(
             UserID INTEGER primary key autoincrement,
-            UserName TEXT NOT NULL, 
+            UserEmail TEXT NOT NULL UNIQUE, 
             UserPassword TEXT NOT NULL,
-            Status INTEGER NOT NULL,
+            Status BOOL NOT NULL,
             TypeID INTEGER NOT NULL,
+            CreateAT TEXT NOT NULL,
+            Alteration TEXT NOT NULL,
             FOREIGN KEY (TypeID) REFERENCES TypeUsers (TypeID) ON DELETE CASCADE
             );
             """
@@ -101,7 +111,6 @@ class DataBases:
             SELECT count(TypeID) from TypeUsers;
             """
         ).fetchone()
-        print(cadastro)
 
         if cadastro[0] == 3:
             pass

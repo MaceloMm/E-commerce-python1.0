@@ -3,6 +3,7 @@ from tkinter import ttk
 from src.interface._Login_Singup import SingUpScreen, LoginScreen
 from src._functions import fonts
 from tkinter import font
+import webbrowser
 
 
 class Application(tk.CTk):
@@ -23,7 +24,7 @@ class Application(tk.CTk):
                         rowheight=25,
                         bordercolor="#2b2b2b",
                         borderwidth=2,
-                        font=font.Font(family='Calibri Light'),
+                        font=('Calibri', 9),
                         )
         style.map("Treeview",
                   background=[("selected", "#B0C4DE")],
@@ -34,7 +35,7 @@ class Application(tk.CTk):
         style.configure("Treeview.Heading",
                         background="#1f1f1f",
                         foreground="#B0C4DE",
-                        font=("Arial", 14, "bold"),
+                        font=("Arial", 12, "bold"),
                         borderwidth=0)
 
         style.map("Treeview.Heading",
@@ -92,7 +93,8 @@ class FirstScreen(tk.CTkFrame):
                                      command=lambda: Application.show_frame(master, SingUpScreen))
         button_singup.grid(row=2, column=0, pady=5)
 
-        help_button = tk.CTkButton(self, text='Ajuda', font=b_font, width=200, height=30,)
+        help_button = tk.CTkButton(self, text='Ajuda', font=b_font, width=200, height=30,
+                                   command=lambda: webbrowser.open('https://github.com/MaceloMm'))
         help_button.grid(row=3, column=0, pady=5)
 
         exit_button = tk.CTkButton(self, text='Sair', font=b_font, width=200, height=30,

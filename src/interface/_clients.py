@@ -108,25 +108,25 @@ class RegisterClientScreen(tk.CTkFrame):
         label_client_name = tk.CTkLabel(self, text='Nome:')
         label_client_name.grid(row=1, column=0, columnspan=1, sticky='w')
 
-        entry_client_name = tk.CTkEntry(self, width=290)
+        entry_client_name = tk.CTkEntry(self, width=290, placeholder_text='Nome')
         entry_client_name.grid(row=2, column=0, columnspan=4, pady=5, sticky='w')
 
         label_client_email = tk.CTkLabel(self, text='Email:')
         label_client_email.grid(row=3, column=0, pady=5, columnspan=1, sticky='w')
 
-        entry_client_email = tk.CTkEntry(self, width=290)
+        entry_client_email = tk.CTkEntry(self, width=290, placeholder_text='Email')
         entry_client_email.grid(row=4, column=0, pady=5, sticky='w', columnspan=4)
 
         label_client_cep = tk.CTkLabel(self, text='CEP:')
         label_client_cep.grid(row=5, column=0, pady=5, sticky='w')
 
-        entry_client_cep = tk.CTkEntry(self)
+        entry_client_cep = tk.CTkEntry(self, placeholder_text='Cep')
         entry_client_cep.grid(row=6, column=0, pady=5, sticky='w')
 
         label_client_num = tk.CTkLabel(self, text='Numero:')
         label_client_num.grid(row=5, column=1, pady=5, sticky='w', padx=5)
 
-        entry_client_num = tk.CTkEntry(self)
+        entry_client_num = tk.CTkEntry(self, placeholder_text='Numero')
         entry_client_num.grid(row=6, column=1, pady=5, padx=5)
 
         button_send = tk.CTkButton(self, text='Enviar', font=b_font,
