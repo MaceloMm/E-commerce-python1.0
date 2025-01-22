@@ -1,6 +1,7 @@
 from src._databases import DataBases
 from bcrypt import hashpw, checkpw, gensalt
 from src._functions import check_email, set_time
+from typing import Tuple, Union
 
 
 class User:
@@ -15,29 +16,64 @@ class User:
         self.__password: bytes = hashpw(password.encode(), gensalt())
 
     def insert_user(self) -> str:
-        exists = User.cursor.execute(
+        """
+
+        :return:
+        """
+        try:
+
+            exists = User.cursor.execute(
+                """
+                SELECT UserEmail FROM users WHERE UserEmail = ?;
+                """, (self.__email,)
+            ).fetchone()
+
+            if exists:
+                return 'Email já cadastrado!'
+
+            tempo = set_time()
+
+            User.cursor.execute(
+                """
+                INSERT INTO users (UserEmail, UserPassword, Status, TypeID, CreateAT, Alteration) VALUES (
+                ?, ?, ?, ?, ?, ?);
+                """, (self.__email, self.__password, True, 2, tempo, tempo)
+            )
+
+            User.db.commit_changes()
+
+        except User.db.exepitons_returns():
+            return 'Ocorreu um erro no cadastro!'
+        else:
+            return 'Usuário cadastrado com sucesso!'
+
+    @staticmethod
+    def check_password(email: str, password: bytes) -> Union[Tuple[bool, str], str]:
+        """
+
+        :param email:
+        :param password:
+        :return:
+        """
+
+        u = User.cursor.execute(
             """
-            SELECT UserEmail FROM users WHERE UserEmail = ?;
-            """, (self.__email,)
+            SELECT users.UserPassword, TypeUsers.TypeName, users.Status FROM users
+            JOIN TypeUsers ON users.TypeID = TypeUsers.TypeID
+            WHERE users.UserEmail = ?;
+            """, (email.lower(),)
         ).fetchone()
 
-        if exists:
-            return 'Email já cadastrado!'
-
-        tempo = set_time()
-
-        User.cursor.execute(
-            """
-            INSERT INTO users (UserEmail, UserPassword, Status, TypeID, CreateAT, Alteration) VALUES (
-            ?, ?, ?, ?, ?, ?);
-            """, (self.__email, self.__password, True, 2, tempo, tempo)
-        )
-
-        User.db.commit_changes()
-
-        return 'Usuário cadastrado com sucesso!'
+        if u:
+            if int(u[2]) != 1:
+                return 'Usuario consta desativado!'
+            if checkpw(password, u[0]):
+                return True, u[1]
+            else:
+                return 'Senha invalida!'
+        else:
+            return 'Email não encontrado'
 
 
 if __name__ == '__main__':
-    user = User('Macelo@macelo.com', 'macelo123')
-    print(user.insert_user())
+    print(User.check_password('Macelo@macelo.com', 'macelo123'.encode()))

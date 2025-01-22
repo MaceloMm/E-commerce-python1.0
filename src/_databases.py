@@ -1,4 +1,5 @@
 import os.path
+import sqlite3
 import sqlite3 as sql
 
 
@@ -122,6 +123,14 @@ class DataBases:
                 """
             )
             self.commit_changes()
+
+    @staticmethod
+    def exepitons_returns():
+        return (
+            sqlite3.OperationalError, sqlite3.IntegrityError, sqlite3.ProgrammingError, sqlite3.InterfaceError,
+            sqlite3.DatabaseError, sqlite3.DataError, sqlite3.NotSupportedError, sqlite3.Warning
+        )
+
 
 
 if __name__ == "__main__":

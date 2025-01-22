@@ -1,9 +1,9 @@
 import customtkinter as tk
-from src.interface._clients import ScreenClient
 from src._functions import fonts
 from tkinter import messagebox
 from typing import Union
 from src._users import User
+from src.interface._orders import OrderScreen
 
 
 class SingUpScreen(tk.CTkFrame):
@@ -67,21 +67,69 @@ class SingUpScreen(tk.CTkFrame):
             master.initial_frame()
 
 
-
 class LoginScreen(tk.CTkFrame):
 
     def __init__(self, master):
         super().__init__(master)
 
-        font_title = tk.CTkFont(weight='bold', size=20, family='Arial')
+        b_font, t_font, f_font = fonts()
 
-        label = tk.CTkLabel(self, text='Login', font=font_title, cursor="hand2")
-        label.pack(pady=10, padx=10)
+        principal_text = tk.CTkLabel(self, text='Login', font=t_font)
+        principal_text.grid(column=0, row=0, pady=10, columnspan=2, sticky='nw')
 
-        label.bind("<Button-1>", self.teste)
+        email_login_label = tk.CTkLabel(self, text='Email:', font=f_font)
+        email_login_label.grid(column=0, row=1, pady=5, sticky='nw', columnspan=2)
 
-        button = tk.CTkButton(self, text='Clique aqui', fg_color=None, hover_color=None, command=lambda: master.show_frame(ScreenClient))
-        button.pack(pady=10, padx=10)
+        email_login_entry = tk.CTkEntry(self, placeholder_text='Email', width=300)
+        email_login_entry.grid(column=0, row=2, columnspan=2)
 
-    def teste(self, event):
-        print('teste')
+        password_login_label = tk.CTkLabel(self, text='Senha:', font=f_font)
+        password_login_label.grid(column=0, row=3, pady=5, sticky='nw', columnspan=2)
+
+        password_login_entry = tk.CTkEntry(self, width=300, placeholder_text='Senha')
+        password_login_entry.grid(column=0, row=4, columnspan=2)
+
+        self.forget_password = tk.CTkLabel(self, cursor='hand2', text='Esqueceu a senha?', font=("calibri", 14))
+        self.forget_password.grid(column=0, row=5, columnspan=2, sticky='nw', pady=2, padx=2)
+
+        self.forget_password.bind("<Enter>", self.on_hover)
+        self.forget_password.bind("<Leave>", self.off_hover)
+        self.forget_password.bind("<Button-1>", self.on_click)
+
+        button_login = tk.CTkButton(self, text='Login', font=b_font,
+                                    command=lambda: LoginScreen.login_checkup(
+                                        master, email=email_login_entry.get(),
+                                        password=password_login_entry.get().encode()))
+        button_login.grid(column=0, row=6, pady=20, sticky='w')
+
+        button_back = tk.CTkButton(self, text='Voltar', font=b_font, command=lambda: master.initial_frame())
+        button_back.grid(column=1, row=6, pady=20, sticky='w')
+
+    def on_hover(self, event):
+        self.forget_password.configure(text_color="#B0C4DE")
+
+    def off_hover(self, event):
+        self.forget_password.configure(text_color="white")
+
+    def on_click(self, event):
+        self.master.show_frame(RecoverPassword)
+
+    @staticmethod
+    def login_checkup(master, email, password):
+        st = User.check_password(email, password)
+        if not isinstance(st, tuple):
+            messagebox.showerror('Info', st)
+            return None
+
+        if st[0] and st[1] == 'client':
+            master.show_frame(OrderScreen)
+
+
+class RecoverPassword(tk.CTkFrame):
+
+    def __init__(self, master):
+        super().__init__(master)
+
+
+
+
