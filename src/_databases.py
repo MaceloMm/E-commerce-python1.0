@@ -1,13 +1,15 @@
 import os.path
 import sqlite3
 import sqlite3 as sql
+from setting import DATABASE_PATH
 
 
 class DataBases:
 
     def __init__(self):
-        db_path = os.path.join(
-            os.getcwd().replace('interface', '').replace('src', ''), 'databases\\commerce.db')
+        # db_path = os.path.join(
+        #     os.getcwd().replace('interface', '').replace('src', ''), 'databases\\commerce.db')
+        db_path = os.path.join(DATABASE_PATH, 'commerce.db')
         self.__conn = sql.connect(db_path)
         self.create_table()
         self.create_types()
@@ -130,7 +132,6 @@ class DataBases:
             sqlite3.OperationalError, sqlite3.IntegrityError, sqlite3.ProgrammingError, sqlite3.InterfaceError,
             sqlite3.DatabaseError, sqlite3.DataError, sqlite3.NotSupportedError, sqlite3.Warning
         )
-
 
 
 if __name__ == "__main__":

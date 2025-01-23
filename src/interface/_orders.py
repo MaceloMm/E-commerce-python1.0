@@ -7,3 +7,5 @@ class OrderScreen(tk.CTkFrame):
         super().__init__(master)
 
         label = tk.CTkLabel(self, text='Teste')
+        label.pack(pady=10, padx=10)
+

@@ -4,6 +4,7 @@ from tkinter import messagebox
 from typing import Union
 from src._users import User
 from src.interface._orders import OrderScreen
+from src.interface._gerencial import GeneralScreen
 
 
 class SingUpScreen(tk.CTkFrame):
@@ -86,7 +87,7 @@ class LoginScreen(tk.CTkFrame):
         password_login_label = tk.CTkLabel(self, text='Senha:', font=f_font)
         password_login_label.grid(column=0, row=3, pady=5, sticky='nw', columnspan=2)
 
-        password_login_entry = tk.CTkEntry(self, width=300, placeholder_text='Senha')
+        password_login_entry = tk.CTkEntry(self, width=300, placeholder_text='Senha', show='*')
         password_login_entry.grid(column=0, row=4, columnspan=2)
 
         self.forget_password = tk.CTkLabel(self, cursor='hand2', text='Esqueceu a senha?', font=("calibri", 14))
@@ -123,6 +124,8 @@ class LoginScreen(tk.CTkFrame):
 
         if st[0] and st[1] == 'client':
             master.show_frame(OrderScreen)
+        elif st[0] and st[1] == 'gerente':
+            master.show_frame(GeneralScreen)
 
 
 class RecoverPassword(tk.CTkFrame):

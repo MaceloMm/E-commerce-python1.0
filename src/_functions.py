@@ -2,6 +2,8 @@ from datetime import datetime
 import requests
 from typing import Union
 import customtkinter as tk
+from setting import STATIC_PATH
+import os
 
 
 def check_email(email: str) -> bool:
@@ -73,6 +75,13 @@ def fonts():
     topic_font = tk.CTkFont(size=13, weight='bold', family='Arial')
 
     return buttons_fonts, title_font, topic_font
+
+
+def format_static_path(directory: str = '', file: str = '') -> Union[str, None]:
+    if directory == '':
+        return None
+    directory = directory + '\\'
+    return os.path.join(STATIC_PATH, os.path.join(directory, file))
 
 
 if __name__ == '__main__':

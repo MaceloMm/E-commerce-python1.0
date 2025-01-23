@@ -64,7 +64,7 @@ class ScreenClient(tk.CTkFrame):
         button_alterar.grid(pady=10, row=3, column=2, padx=5)
 
         button_back = tk.CTkButton(frame_teste, text='Voltar', font=b_font,
-                                command=lambda: master.initial_frame())
+                                command=lambda: master.show_frame(master.get_gerencial_screen()))
         button_back.grid(pady=10, row=3, column=3, padx=5)
 
         # button_info = master.get_button_info()

@@ -15,7 +15,7 @@ class User:
         self.__email: str = email.lower()
         self.__password: bytes = hashpw(password.encode(), gensalt())
 
-    def insert_user(self) -> str:
+    def insert_user(self, perm: int = 2) -> str:
         """
 
         :return:
@@ -37,7 +37,7 @@ class User:
                 """
                 INSERT INTO users (UserEmail, UserPassword, Status, TypeID, CreateAT, Alteration) VALUES (
                 ?, ?, ?, ?, ?, ?);
-                """, (self.__email, self.__password, True, 2, tempo, tempo)
+                """, (self.__email, self.__password, True, perm, tempo, tempo)
             )
 
             User.db.commit_changes()
@@ -76,4 +76,5 @@ class User:
 
 
 if __name__ == '__main__':
-    print(User.check_password('Macelo@macelo.com', 'macelo123'.encode()))
+    u = User('admin@admin.com', 'admin')
+    u.insert_user(perm=3)

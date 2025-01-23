@@ -1,9 +1,10 @@
 import customtkinter as tk
 from tkinter import ttk
 from src.interface._Login_Singup import SingUpScreen, LoginScreen
-from src._functions import fonts
-from tkinter import font
+from src._functions import fonts, format_static_path
+from src.interface._gerencial import GeneralScreen
 import webbrowser
+from PIL import Image
 
 
 class Application(tk.CTk):
@@ -69,6 +70,9 @@ class Application(tk.CTk):
     def get_button_info(self):
         return self.button_teste
 
+    def get_gerencial_screen(self):
+        return GeneralScreen
+
 
 class FirstScreen(tk.CTkFrame):
 
@@ -85,16 +89,33 @@ class FirstScreen(tk.CTkFrame):
         principal_text = tk.CTkLabel(self, text='Escolha uma das opções:', font=t_font)
         principal_text.grid(row=0, column=0, pady=10)
 
+        image_login = tk.CTkImage(dark_image=Image.open(format_static_path('icon', 'user.png')).resize((15, 15)),
+                                  light_image=Image.open(format_static_path('icon', 'user.png')).resize((15, 15)),
+                                  size=(15, 15))
+
+        image_singup = tk.CTkImage(dark_image=Image.open(format_static_path('icon', 'add-user.png')).resize((15, 15)),
+                                   light_image=Image.open(format_static_path('icon', 'add-user.png')).resize((15, 15)),
+                                   size=(15, 15)
+                                   )
+
+        image_help = tk.CTkImage(dark_image=Image.open(format_static_path('icon', 'help.png')).resize((15, 15)),
+                                 light_image=Image.open(format_static_path('icon', 'help.png')).resize((15, 15)),
+                                 size=(15, 15)
+                                 )
+
         button_login = tk.CTkButton(self, text='Login', font=b_font, width=200, height=30,
-                                    command=lambda: Application.show_frame(master, LoginScreen))
+                                    command=lambda: Application.show_frame(master, LoginScreen),
+                                    image=image_login, compound='left', anchor='center')
         button_login.grid(row=1, column=0, pady=5)
 
         button_singup = tk.CTkButton(self, text='Cadastro', font=b_font, width=200, height=30,
-                                     command=lambda: Application.show_frame(master, SingUpScreen))
+                                     command=lambda: Application.show_frame(master, SingUpScreen),
+                                     image=image_singup)
         button_singup.grid(row=2, column=0, pady=5)
 
         help_button = tk.CTkButton(self, text='Ajuda', font=b_font, width=200, height=30,
-                                   command=lambda: webbrowser.open('https://github.com/MaceloMm'))
+                                   command=lambda: webbrowser.open('https://github.com/MaceloMm'),
+                                   image=image_help)
         help_button.grid(row=3, column=0, pady=5)
 
         exit_button = tk.CTkButton(self, text='Sair', font=b_font, width=200, height=30,
