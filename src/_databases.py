@@ -63,7 +63,7 @@ class DataBases:
             Total REAL,
             CreateAT TEXT NOT NULL,
             Alteration TEXT NOT NULL,
-            FOREIGN KEY (ClientID) REFERENCES TypeUsers (ClientID) ON DELETE CASCADE 
+            FOREIGN KEY (ClientID) REFERENCES Client (ClientID) ON DELETE CASCADE 
             );
             """
         )
