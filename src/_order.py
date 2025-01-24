@@ -1,3 +1,7 @@
+from typing import List, Tuple
+from src._databases import DataBases
+from src._functions import set_time
+import json
 """
 3. Pedido
 - Atributos: id, cliente_id, produtos, quantidades, total.
@@ -10,9 +14,31 @@
 
 class Order:
 
-    def __init__(self, clientid: int, produtcs: list, quantity: int, total: float):
+    db = DataBases()
+    cursor = db.get_cursor
+
+    def __init__(self, clientid: int, produtcs: List[Tuple[str, int]], total: float) -> None:
 
         self.__clientid = clientid
         self.__products = produtcs
-        self.__quantity = quantity
         self.__total = total
+
+    def insert_order(self) -> str:
+        try:
+            time = set_time()
+            Order.cursor.execute(
+               """
+               INSERT INTO Orders (ClientID, TotalProducts, Total, CreateAT, Alteration) VALUES
+               (?, ?, ?, ?, ?);
+               """, (self.__clientid, json.dumps(self.__products), self.__total, time, time)
+            )
+        except Order.db.exepitons_returns() as err:
+            return f'Ocorreu um erro ao inserir o produto!'
+        else:
+            Order.db.commit_changes()
+            return 'Pedido realizado com sucesso!'
+
+
+if __name__ == '__main__':
+    teste = Order(1, produtcs=[('Queijo', 2), ('Presunto', 3)], total=50.0)
+    print(teste.insert_order())

@@ -23,7 +23,7 @@ def check_email(email: str) -> bool:
 
 
 def set_time() -> str:
-    return datetime.now().strftime("%Y/%m/%dT| %H:%M:%S")
+    return datetime.now().strftime("%Y-%m-%dT - %H:%M:%S")
 
 
 def format_adress(adress: dict, num: int) -> dict:

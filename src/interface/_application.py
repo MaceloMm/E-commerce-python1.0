@@ -70,7 +70,8 @@ class Application(tk.CTk):
     def get_button_info(self):
         return self.button_teste
 
-    def get_gerencial_screen(self):
+    @staticmethod
+    def get_gerencial_screen():
         return GeneralScreen
 
 
@@ -103,6 +104,10 @@ class FirstScreen(tk.CTkFrame):
                                  size=(15, 15)
                                  )
 
+        image_exit = tk.CTkImage(dark_image=Image.open(format_static_path('icon', 'logout.png')).resize((25, 25)),
+                                 light_image=Image.open(format_static_path('icon', 'logout.png')).resize((25, 25)),
+                                 size=(15, 15))
+
         button_login = tk.CTkButton(self, text='Login', font=b_font, width=200, height=30,
                                     command=lambda: Application.show_frame(master, LoginScreen),
                                     image=image_login, compound='left', anchor='center')
@@ -119,7 +124,8 @@ class FirstScreen(tk.CTkFrame):
         help_button.grid(row=3, column=0, pady=5)
 
         exit_button = tk.CTkButton(self, text='Sair', font=b_font, width=200, height=30,
-                                   command=lambda: exit_application(master))
+                                   command=lambda: exit_application(master),
+                                   image=image_exit)
         exit_button.grid(row=4, column=0, pady=5)
 
         def exit_application(app):
