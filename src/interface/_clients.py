@@ -5,6 +5,7 @@ from tkinter import messagebox
 from tkinter import ttk
 from json import loads
 from src._functions import format_adress, get_cep_infos, fonts
+from src.interface._imagens import IMAGE_DELETE, IMAGE_BACK, IMAGE_ALTERAR, IMAGE_SINGUP
 
 client_id = 0
 
@@ -52,19 +53,27 @@ class ScreenClient(tk.CTkFrame):
         frame_teste.pack(pady=10)
 
         button_singup = tk.CTkButton(frame_teste, text='Cadastrar Cliente', font=b_font,
-                                  command=lambda: master.show_frame(RegisterClientScreen))
+                                     command=lambda: master.show_frame(RegisterClientScreen),
+                                     image=IMAGE_SINGUP
+                                     )
         button_singup.grid(pady=10, row=3, column=0, padx=5)
 
         button_delete = tk.CTkButton(frame_teste, text='Deletar Cliente', font=b_font,
-                                  command=lambda: ScreenClient.validation_delete(master))
+                                     command=lambda: ScreenClient.validation_delete(master),
+                                     image=IMAGE_DELETE
+                                     )
         button_delete.grid(pady=10, row=3, column=1, padx=5)
 
         button_alterar = tk.CTkButton(frame_teste, text='Alterar Cadastro', font=b_font,
-                                   command=lambda: ScreenClient.validation_alteration(master))
+                                      command=lambda: ScreenClient.validation_alteration(master),
+                                      image=IMAGE_ALTERAR
+                                      )
         button_alterar.grid(pady=10, row=3, column=2, padx=5)
 
         button_back = tk.CTkButton(frame_teste, text='Voltar', font=b_font,
-                                command=lambda: master.show_frame(master.get_gerencial_screen()))
+                                   command=lambda: master.show_frame(master.get_gerencial_screen()),
+                                   image=IMAGE_BACK
+                                   )
         button_back.grid(pady=10, row=3, column=3, padx=5)
 
         # button_info = master.get_button_info()
