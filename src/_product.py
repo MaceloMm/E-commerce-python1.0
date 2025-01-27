@@ -1,5 +1,5 @@
-from _databases import DataBases
-from _functions import set_time
+from src._databases import DataBases
+from src._functions import set_time
 
 """
 1. Produto
@@ -110,17 +110,26 @@ class Product:
 
             return f"Produto '{product}' deletado com sucesso!"
         return f"ID de produto '{product_id}' inexistente!"
-  
 
     # Método está OK
     @staticmethod
-    def list_product(category: str = None) -> list:
+    def list_product(category: str = None, seach_name: bool = False) -> list:
         """
         Método responsável por listar os produtos ativos no sistema
 
         :param category: Parametro responsável por filtrar a lista de produtos por determinada categoria
+        :param seach_name:
         :return: Retorna uma lista de tuplas com as informações dos produtos ativos no sistema
         """
+
+        if seach_name:
+            result = Product.cursor.execute(
+                """
+                SELECT ProductName From Product Where Status = True;
+                """
+            ).fetchall()
+
+            return [name[0] for name in result]
         
         if category:
             result = Product.cursor.execute(
@@ -133,7 +142,6 @@ class Product:
             ).fetchall()
         
         return list(result)
-        
 
     # Método está OK
     @staticmethod
@@ -154,4 +162,24 @@ class Product:
         
 
 if __name__ == "__main__":
-    pass
+    # produtos = [
+    #     ['Teclado Gamer', '250', '15', 'Informática'],
+    #     ['Mouse Sem Fio', '120', '30', 'Informática'],
+    #     ['Smartphone', '1500', '20', 'Eletrônicos'],
+    #     ['Fone Bluetooth', '200', '25', 'Eletrônicos'],
+    #     ["Monitor 24''", '850', '10', 'Informática'],
+    #     ['Cadeira Gamer', '1200', '5', 'Móveis'],
+    #     ['Caixa de Som', '300', '12', 'Áudio'],
+    #     ['Notebook', '3500', '8', 'Informática'],
+    #     ['Ventilador', '200', '18', 'Eletrodomésticos'],
+    #     ["Smart TV 50''", '3200', '7', 'Eletrônicos'],
+    # ]
+    #
+    # for i in produtos:
+    #     p = Product(name=i[0], price=int(i[1]), quantity=int(i[2]), category=i[3])
+    #     print(p.add_product())
+    #     print('Script Finalizado')
+    for i in Product.list_product(seach_name=True):
+        print(i)
+
+

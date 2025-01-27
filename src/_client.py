@@ -124,11 +124,20 @@ class Client:
         return f'Cliente {usuario} deletado com sucesso!'
 
     @staticmethod
-    def list_client() -> list:
+    def list_client(search_name: bool = False) -> list:
+
+        if search_name:
+            list_client = Client.cursor.execute(
+                """
+                SELECT ClientName FROM Client WHERE Status = True;
+                """
+            ).fetchall()
+
+            return [name[0] for name in list_client]
 
         list_client = Client.cursor.execute(
             """
-            SELECT ClientID, ClientName, ClientEmail, ClientLocation, Status FROM Client;
+            SELECT ClientID, ClientName, ClientEmail, ClientLocation, Status FROM Client WHERE Status = True;
             """
         ).fetchall()
 
