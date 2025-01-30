@@ -1,7 +1,7 @@
 from src._databases import DataBases
 from bcrypt import hashpw, checkpw, gensalt
 from src._functions import check_email, set_time
-from typing import Tuple, Union
+from typing import Tuple, Union, Generator
 
 
 class User:
@@ -74,7 +74,35 @@ class User:
         else:
             return 'Email não encontrado'
 
+    @staticmethod
+    def list_users() -> Union[str, None, Generator]:
+
+        try:
+            ret = User.cursor.execute(
+                """
+                SELECT UserEmail FROM users WHERE Status = True;
+                """
+            ).fetchall()
+        except User.db.exepitons_returns() as err:
+            return 'Ocorreu um erro na cosulta'
+        else:
+            return (i[0] for i in ret) if len(ret) != 0 else None
+
+    @staticmethod
+    def change_password(password: bytes) -> bool:
+
+        try:
+            password = hashpw(password, gensalt())
+            User.cursor.execute(
+                """
+                UPDATE users SET UserPassword = ?;
+                """, (password, )
+            )
+        except User.db.exepitons_returns():
+            return False
+        else:
+            return True
+
 
 if __name__ == '__main__':
-    u = User('admin@admin.com', 'admin')
-    u.insert_user(perm=3)
+    print(User.list_users())

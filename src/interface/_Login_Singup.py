@@ -6,6 +6,8 @@ from src._users import User
 from src.interface._orders import OrderScreen
 from src.interface._gerencial import GeneralScreen
 from src.send_email import EmailBackendOnyx
+import threading
+import queue
 
 
 code = ''
@@ -162,6 +164,7 @@ class RecoverPassword(tk.CTkFrame):
 
         self.email_entry = tk.CTkEntry(self, placeholder_text='Email...', font=f_font, width=300)
         self.email_entry.grid(column=0, row=2, pady=2, columnspan=2)
+        self.email_entry.bind('<Return>', self.on_press)
 
         button_enviar = tk.CTkButton(self, text='Enviar', font=b_font,
                                      command=lambda: self.get_email()
@@ -171,15 +174,126 @@ class RecoverPassword(tk.CTkFrame):
         button_voltar = tk.CTkButton(self, text='Voltar', font=b_font, command=lambda: master.show_frame(LoginScreen))
         button_voltar.grid(column=1, row=3, pady=15)
 
-    def get_email(self):
+        self.loading_label = tk.CTkLabel(self, text='', font=f_font)
+        self.loading_label.grid(column=0, row=4, columnspan=2, pady=20)
+
+    def get_email(self) -> None:
+
+        def send_email_task(email, result_queue):
+            code, ret = EmailBackendOnyx.send_email(email)
+            result_queue.put((code, ret))
+
+        def check_queue():
+            global code
+            if not result_queue.empty():
+                code, ret = result_queue.get()
+                messagebox.showinfo('Info', ret)
+                self.master.show_frame(CheckCode)
+            else:
+                self.master.after(100, check_queue)
+
         global code
+
         if self.email_entry.get() is None or self.email_entry.get() == '':
-            messagebox.showinfo('Info', 'Preencha os campos')
+            messagebox.showinfo('Info', 'Preencha o campo!')
             return None
 
-        cod, ret = EmailBackendOnyx.send_email(self.email_entry.get())
-        code = cod
-        messagebox.showinfo('Info', ret)
+        if self.email_entry.get() not in User.list_users():
+            messagebox.showinfo('Info', 'Email não cadastrado!')
+            return None
 
+        result_queue = queue.Queue()
+
+        self.loading_label.configure(text="Enviando aguarde...")
+        threading.Thread(target=send_email_task, args=(self.email_entry.get(), result_queue)).start()
+        check_queue()
+
+        # code, ret = EmailBackendOnyx.send_email(self.email_entry.get())
+        # messagebox.showinfo('Info', ret)
+        # self.master.show_frame(CheckCode)
+
+    def on_press(self, event):
+        self.get_email()
+
+
+class CheckCode(tk.CTkFrame):
+
+    def __init__(self, master):
+        super().__init__(master)
+
+        b_font, t_font, f_font = fonts()
+
+        text_principal = tk.CTkLabel(self, text='Recuperação de senha!', font=t_font)
+        text_principal.grid(column=0, row=0, columnspan=2)
+
+        verification_code = tk.CTkLabel(self, text='Codigo de verificação: ', font=f_font)
+        verification_code.grid(column=0, row=1, columnspan=2, sticky='nw', pady=15)
+
+        self.entry_code = tk.CTkEntry(self, placeholder_text='Code..', width=300)
+        self.entry_code.grid(column=0, row=2, columnspan=2, pady=5)
+
+        button_send = tk.CTkButton(self, font=b_font, text='Enviar', command=lambda: self.check_code())
+        button_send.grid(column=0, row=3, pady=20)
+
+        button_back = tk.CTkButton(self, font=b_font, text='Voltar',
+                                   command=lambda: self.master.show_frame(LoginScreen))
+        button_back.grid(column=1, row=3, pady=20)
+
+    def check_code(self) -> None:
+        global code
+
+        if self.entry_code.get() is None or self.entry_code.get() == '':
+            messagebox.showinfo('Info', 'Código invalido!')
+            return None
+
+        if EmailBackendOnyx.check_code(code):
+            self.master.show_frame(ChangePasswordScreen)
+            return None
+        else:
+            messagebox.showerror('Info', 'Codigo invalido!')
+            return None
+
+
+class ChangePasswordScreen(tk.CTkFrame):
+
+    def __init__(self, master):
+        super().__init__(master)
+
+        b_font, t_font, f_font = fonts()
+
+        text_principal = tk.CTkLabel(self, text='Recuperação de senha!', font=t_font)
+        text_principal.grid(column=0, row=0, columnspan=2)
+
+        password_label = tk.CTkLabel(self, text='Digite a senha:', font=f_font)
+        password_label.grid(column=0, row=1, columnspan=2, sticky='nw', pady=15)
+
+        self.password_entry = tk.CTkEntry(self, placeholder_text='Senha...', width=300, show='*')
+        self.password_entry.grid(column=0, row=2, columnspan=2, pady=5)
+
+        password_confirm_label = tk.CTkLabel(self, text='Confirme a senha:', font=f_font)
+        password_confirm_label.grid(column=0, row=3, columnspan=2, sticky='nw', pady=10)
+
+        self.password_confirm_entry = tk.CTkEntry(self, width=300, placeholder_text='Confime a senha...', show='*')
+        self.password_confirm_entry.grid(column=0, row=4, columnspan=2, pady=5)
+
+        button_send = tk.CTkButton(self, font=b_font, text='Enviar', command=lambda: self.on_click_change())
+        button_send.grid(column=0, row=5, pady=20)
+
+        button_back = tk.CTkButton(self, font=b_font, text='Voltar',
+                                   command=lambda: self.master.show_frame(LoginScreen))
+        button_back.grid(column=1, row=5, pady=20)
+
+    def on_click_change(self):
+        if self.password_entry.get() == self.password_confirm_entry.get():
+            ret = User.change_password(password=self.password_entry.get().encode())
+            if ret:
+                messagebox.showinfo('Info', 'Senha alterada com sucesso!')
+                self.master.show_frame(LoginScreen)
+                return None
+            else:
+                messagebox.showerror('ERROR', 'Ocorreu um erro tente novamente.')
+        else:
+            messagebox.showerror('ERROR', 'As senhas estão diferentes!')
+            return None
 
 
