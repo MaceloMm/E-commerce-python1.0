@@ -55,7 +55,7 @@ class Application(tk.CTk):
                                       font=tk.CTkFont(weight='bold', size=30, family='Helvetica'))
         self.name_store.place(x=25, y=15, anchor='nw')
 
-        self.button_teste = tk.CTkButton(self, text='¡', width=2, font=b_font, command=self.show_frame(OrderScreen))
+        self.button_teste = tk.CTkButton(self, text='¡', width=2, font=b_font)
         self.button_teste.place(x=685, y=485, anchor='se')
 
     def show_frame(self, frame_class):

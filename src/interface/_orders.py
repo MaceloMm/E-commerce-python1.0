@@ -123,7 +123,7 @@ class ButtonsFrame(tk.CTkFrame):
 
         super().__init__(master, width=width, height=height, fg_color=color)
 
-        buttons_enviar = tk.CTkButton(self, text='Enviar', font=b_font)
+        buttons_enviar = tk.CTkButton(self, text='Enviar', font=b_font, command=lambda: print())
         buttons_enviar.grid(pady=10, padx=10, column=0, row=0)
 
         button_cart = tk.CTkButton(self, text='Carrinho', font=b_font)
@@ -145,10 +145,10 @@ class OrderScreen(tk.CTkFrame):
         produts_names = Product.list_product(seach_name=True)
         client_names = Client.list_client(search_name=True)
 
-        produts_view = ScrollabFrameProduct(self, title='Produtos', values=produts_names, largura=400, altura=225)
+        produts_view = ScrollabFrameProduct(self, title='Produtos', values=produts_names, largura=400, altura=230)
         produts_view.grid(column=0, row=0, padx=10)
 
-        client_views = ScrollabFrameClients(self, title='Clientes', values=client_names, largura=200, altura=225)
+        client_views = ScrollabFrameClients(self, title='Clientes', values=client_names, largura=200, altura=230)
         client_views.grid(column=1, row=0, padx=10)
 
         buttons_views = ButtonsFrame(self, width=600, height=200, true_master=master)
