@@ -11,6 +11,8 @@ import queue
 
 
 code = ''
+email_check = ''
+password_check = ''
 
 
 class SingUpScreen(tk.CTkFrame):
@@ -42,9 +44,9 @@ class SingUpScreen(tk.CTkFrame):
         self.password_confirm_entry.grid(column=0, row=6, columnspan=2)
 
         button_send = tk.CTkButton(self, text='Cadastrar', font=b_font,
-                                   command=lambda: SingUpScreen.create_user(
-                                       master=master, email=self.email_entry.get(), password=self.password_entry.get(),
-                                       confirm_password=self.password_confirm_entry.get()
+                                   command=lambda: self.create_user(
+                                        email=self.email_entry.get(), password=self.password_entry.get(),
+                                        confirm_password=self.password_confirm_entry.get()
                                    ))
         button_send.grid(column=0, row=7, pady=20)
 
@@ -56,12 +58,21 @@ class SingUpScreen(tk.CTkFrame):
         self.password_entry.bind('<Return>', self.on_press)
         self.password_confirm_entry.bind('<Return>', self.on_press)
 
-    def on_press(self, event):
-        SingUpScreen.create_user(self.master, self.email_entry.get(), self.password_entry.get(),
-                                 self.password_confirm_entry.get())
+        self.loadding_label = tk.CTkLabel(self, text='', font=f_font)
+        self.loadding_label.grid(column=0, row=8, columnspan=2)
 
-    @staticmethod
-    def create_user(master, email, password, confirm_password) -> Union[str, None]:
+    def on_press(self, event):
+        self.create_user(email=self.email_entry.get(), password=self.password_entry.get(),
+                         confirm_password=self.password_confirm_entry.get())
+
+    def create_user(self, email, password, confirm_password) -> Union[str, None]:
+        global code
+
+        for i in User.list_users():
+            if i == email:
+                messagebox.showinfo('Info', 'Email já cadastrado!')
+                return None
+
         if email == '' and password == '' and confirm_password == '':
             messagebox.showerror('Info', 'Nenhum campo preenchido!')
             return None
@@ -69,17 +80,40 @@ class SingUpScreen(tk.CTkFrame):
             messagebox.showerror('Info', 'Senhas não estão iguais!')
             return None
 
-        try:
-            u = User(email, password)
-        except ValueError as err:
-            messagebox.showerror('Info', str(err))
-        else:
-            ret = u.insert_user()
-            if ret != 'Usuário cadastrado com sucesso!':
-                messagebox.showerror('Info', ret)
-                return None
-            messagebox.showinfo('Info', ret)
-            master.initial_frame()
+        def send_email_task(email, result_queue):
+            code, ret = EmailBackendOnyx.send_email(email)
+            result_queue.put((code, ret))
+
+        def check_queue():
+            global code
+            global email_check
+            global password_check
+            if not result_queue.empty():
+                code, ret = result_queue.get()
+                email_check = email
+                password_check = password
+                messagebox.showinfo('Info', ret)
+                self.master.show_frame(CheckCode)
+            else:
+                self.master.after(100, check_queue)
+
+        result_queue = queue.Queue()
+
+        self.loadding_label.configure(text="Enviando aguarde...")
+        threading.Thread(target=send_email_task, args=(self.email_entry.get(), result_queue)).start()
+        check_queue()
+
+        # try:
+        #     u = User(email, password)
+        # except ValueError as err:
+        #     messagebox.showerror('Info', str(err))
+        # else:
+        #     ret = u.insert_user()
+        #     if ret != 'Usuário cadastrado com sucesso!':
+        #         messagebox.showerror('Info', ret)
+        #         return None
+        #     messagebox.showinfo('Info', ret)
+        #     master.initial_frame()
 
 
 class LoginScreen(tk.CTkFrame):
@@ -180,8 +214,8 @@ class RecoverPassword(tk.CTkFrame):
     def get_email(self) -> None:
 
         def send_email_task(email, result_queue):
-            code, ret = EmailBackendOnyx.send_email(email)
-            result_queue.put((code, ret))
+            ret_code, ret = EmailBackendOnyx.send_email(email)
+            result_queue.put((ret_code, ret))
 
         def check_queue():
             global code
@@ -241,10 +275,20 @@ class CheckCode(tk.CTkFrame):
 
     def check_code(self) -> None:
         global code
+        global email_check
+        global password_check
 
         if self.entry_code.get() is None or self.entry_code.get() == '':
             messagebox.showinfo('Info', 'Código invalido!')
             return None
+
+        if EmailBackendOnyx.check_code(code) and email_check != '' and password_check != '':
+            u = User(email_check, password_check)
+            email_check = ''
+            password_check = ''
+            ret = u.insert_user()
+            messagebox.showinfo('Info', ret)
+            self.master.initial_frame()
 
         if EmailBackendOnyx.check_code(code):
             self.master.show_frame(ChangePasswordScreen)
