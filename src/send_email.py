@@ -16,7 +16,7 @@ class EmailBackendOnyx:
     EMAIL_HOST = 'smtp.gmail.com'  # Servidor SMTP do Gmail
     EMAIL_PORT = 587  # Porta para TLS
     EMAIL_HOST_USER = 'maceloaugusto066@gmail.com'  # Seu e-mail
-    EMAIL_HOST_PASSWORD = 'fkox nehf islh hvda'
+    EMAIL_HOST_PASSWORD = 'fkox nehf islh hvda' # Senha de aplicativo
 
     @classmethod
     def send_email(cls, email_dest: str) -> Union[Tuple[str, str], str]:

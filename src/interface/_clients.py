@@ -2,7 +2,7 @@ import json
 from src._client import Client
 import customtkinter as tk
 from tkinter import messagebox
-from tkinter import ttk
+from tkinter import ttk, Menu
 from json import loads
 from src._functions import format_adress, get_cep_infos, fonts
 from src.interface._imagens import IMAGE_DELETE, IMAGE_BACK, IMAGE_ALTERAR, IMAGE_SINGUP
@@ -45,8 +45,9 @@ class ScreenClient(tk.CTkFrame):
                     email.title(),
                     endereco["cep"],
                     f'{endereco["logradouro"].title()} {endereco["numero"]}'
-            ))
+                ))
 
+        table.bind('<Button-3>', self.show_context_menu)
         table.pack(fill=tk.BOTH, expand=True)
 
         frame_teste = tk.CTkFrame(self, fg_color='#1f1f1f')
@@ -86,6 +87,12 @@ class ScreenClient(tk.CTkFrame):
             client_id = int(table.item(item_selecionado, 'values')[0])
 
         table.bind("<<TreeviewSelect>>", get_dados)
+
+    def show_context_menu(self, event):
+        menu = Menu(self, tearoff=0, bg="#1f1f1f", fg="#B0C4DE")
+        menu.add_command(label='Editar', command=lambda: self.validation_alteration(self.master))
+        menu.add_command(label='Deletar', command=lambda: self.validation_delete(self.master))
+        menu.tk_popup(event.x_root, event.y_root)
 
     @staticmethod
     def validation_alteration(master):

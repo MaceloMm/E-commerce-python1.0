@@ -5,7 +5,7 @@ from src._functions import fonts, format_static_path
 from src.interface._gerencial import GeneralScreen
 import webbrowser
 from PIL import Image
-from src.interface._orders import OrderScreen
+from src.interface._imagens import IMAGE_LOGO
 
 
 class Application(tk.CTk):
@@ -28,6 +28,7 @@ class Application(tk.CTk):
                         borderwidth=2,
                         font=('Calibri', 9),
                         )
+
         style.map("Treeview",
                   background=[("selected", "#B0C4DE")],
                   foreground=[("selected", "#2b2b2b")],
@@ -51,9 +52,9 @@ class Application(tk.CTk):
 
         b_font, f_font, t_font = fonts()
 
-        self.name_store = tk.CTkLabel(self, text='Onyx Store',
+        self.name_store = tk.CTkLabel(self, text='', image=IMAGE_LOGO,
                                       font=tk.CTkFont(weight='bold', size=30, family='Helvetica'))
-        self.name_store.place(x=25, y=15, anchor='nw')
+        self.name_store.place(x=25, y=20, anchor='nw')
 
         self.button_teste = tk.CTkButton(self, text='¡', width=2, font=b_font)
         self.button_teste.place(x=685, y=485, anchor='se')
@@ -62,6 +63,8 @@ class Application(tk.CTk):
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = frame_class(self)
+        # if frame_class.name_class() == 'FirstScreen':
+        #
         self.current_frame.configure(fg_color='#1f1f1f')
         self.current_frame.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -133,10 +136,13 @@ class FirstScreen(tk.CTkFrame):
             app.quit()
             exit(1)
 
+    @staticmethod
+    def name_class():
+        return 'FirstScreen'
+
 
 root = Application()
 
 
 if __name__ == '__main__':
-    root = Application()
-    root.mainloop()
+    pass

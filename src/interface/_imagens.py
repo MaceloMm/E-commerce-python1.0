@@ -35,3 +35,7 @@ IMAGE_ORDER = CTkImage(dark_image=Image.open(format_static_path('icon', 'orders.
                        light_image=Image.open(format_static_path('icon', 'orders.png')).resize((15, 15)),
                        size=(15, 15)
                        )
+
+IMAGE_LOGO = CTkImage(dark_image=Image.open(format_static_path('icon', 'logo.png')),
+                      light_image=Image.open(format_static_path('icon', 'logo.png')),
+                      size=(175, 75))
