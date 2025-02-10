@@ -83,10 +83,11 @@ class User:
                 SELECT UserEmail FROM users WHERE Status = True;
                 """
             ).fetchall()
+            ret = ret if ret is not None else []
         except User.db.exepitons_returns() as err:
             return 'Ocorreu um erro na cosulta'
         else:
-            return (i[0] for i in ret) if len(ret) != 0 else None
+            return (i[0] for i in ret)
 
     @staticmethod
     def change_password(password: bytes) -> bool:
@@ -105,4 +106,5 @@ class User:
 
 
 if __name__ == '__main__':
-    print(User.list_users())
+    user = User("admin@admin", "12345")
+    user.insert_user(3)
