@@ -277,6 +277,7 @@ class CheckCode(tk.CTkFrame):
         global code
         global email_check
         global password_check
+        print(email_check, password_check)
 
         if self.entry_code.get() is None or self.entry_code.get() == '':
             messagebox.showinfo('Info', 'Código invalido!')
@@ -289,6 +290,7 @@ class CheckCode(tk.CTkFrame):
             ret = u.insert_user()
             messagebox.showinfo('Info', ret)
             self.master.initial_frame()
+            return None
 
         if EmailBackendOnyx.check_code(code):
             self.master.show_frame(ChangePasswordScreen)

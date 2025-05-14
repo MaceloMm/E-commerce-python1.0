@@ -40,6 +40,14 @@ def format_adress(adress: dict, num: int) -> dict:
     return adress
 
 
+def format_price(price: Union[float, int]) -> str:
+
+    if isinstance(price, int) or isinstance(price, float):
+        return f'R$ {price:,.2f}'
+    else:
+        return 'Preço precisa ser um numero!'
+
+
 def get_cep_infos(cep: str) -> Union[str, dict]:
     """
     Função responsavel por verificar se o CEP e valido e retorna as informações de
@@ -85,5 +93,5 @@ def format_static_path(directory: str = '', file: str = '') -> Union[str, None]:
 
 
 if __name__ == '__main__':
-    print(get_cep_infos('06326488'))
+    print(format_price(1500))
 

@@ -26,6 +26,9 @@ class GeneralScreen(tk.CTkFrame):
         button_order = tk.CTkButton(self, text='Realizar pedidos', font=b_font, width=250, height=30, image=IMAGE_ORDER)
         button_order.grid(pady=15, column=0, row=3)
 
+        button_relatory = tk.CTkButton(self, text='Relatorios', font=b_font, width=250, height=30)
+        button_relatory.grid(pady=15, column=0, row=4)
+
         button_back = tk.CTkButton(self, text='Voltar', font=b_font, width=250, height=30,
                                    command=lambda: master.initial_frame(), image=IMAGE_BACK)
-        button_back.grid(pady=15, column=0, row=4)
+        button_back.grid(pady=15, column=0, row=5)

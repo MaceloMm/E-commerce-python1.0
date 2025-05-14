@@ -162,24 +162,24 @@ class Product:
         
 
 if __name__ == "__main__":
-    # produtos = [
-    #     ['Teclado Gamer', '250', '15', 'Informática'],
-    #     ['Mouse Sem Fio', '120', '30', 'Informática'],
-    #     ['Smartphone', '1500', '20', 'Eletrônicos'],
-    #     ['Fone Bluetooth', '200', '25', 'Eletrônicos'],
-    #     ["Monitor 24''", '850', '10', 'Informática'],
-    #     ['Cadeira Gamer', '1200', '5', 'Móveis'],
-    #     ['Caixa de Som', '300', '12', 'Áudio'],
-    #     ['Notebook', '3500', '8', 'Informática'],
-    #     ['Ventilador', '200', '18', 'Eletrodomésticos'],
-    #     ["Smart TV 50''", '3200', '7', 'Eletrônicos'],
-    # ]
-    #
-    # for i in produtos:
-    #     p = Product(name=i[0], price=int(i[1]), quantity=int(i[2]), category=i[3])
-    #     print(p.add_product())
-    #     print('Script Finalizado')
-    for i in Product.list_product(seach_name=True):
+    produtos = [
+        ['Tablet', '1800', '15', 'Eletrônicos'],
+        ['Impressora Multifuncional', '600', '10', 'Informática'],
+        ['Headset Gamer', '350', '20', 'Áudio'],
+        ['Micro-ondas', '900', '12', 'Eletrodomésticos'],
+        ['Câmera de Segurança', '450', '18', 'Eletrônicos'],
+        ['HD Externo 1TB', '400', '25', 'Informática'],
+        ['Liquidificador', '250', '30', 'Eletrodomésticos'],
+        ['Console de Videogame', '4500', '5', 'Eletrônicos'],
+        ['Mousepad RGB', '150', '40', 'Informática'],
+        ['Carregador Portátil', '220', '22', 'Eletrônicos'],
+    ]
+
+    for i in produtos:
+        p = Product(name=i[0], price=int(i[1]), quantity=int(i[2]), category=i[3])
+        print(p.add_product())
+        print('Script Finalizado')
+    for i in Product.list_product():
         print(i)
 
 
