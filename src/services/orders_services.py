@@ -12,6 +12,11 @@ class OrderService:
         self.table = 'Orders'
 
     def check_order(self, order_id) -> dict:
+        """
+
+        :param order_id:
+        :return:
+        """
         try:
             response = self.rep.select(table=self.table, filters=True, OrderID=order_id)
         except Exception as err:
@@ -22,6 +27,11 @@ class OrderService:
             return {'success': True, 'exists': False, 'error': None}
 
     def insert_order(self, order: Order) -> dict:
+        """
+
+        :param order:
+        :return:
+        """
         try:
             self.rep.insert(table=self.table, values=[order.client_id, order.products, order.total])
         except Exception as err:
@@ -30,6 +40,11 @@ class OrderService:
             return {'success': True, 'message': 'Pedido criado com sucesso', 'error': None}
 
     def cancel_order(self, order_id: int) -> dict:
+        """
+
+        :param order_id:
+        :return:
+        """
         try:
             if not self.check_order(order_id).get('exists'):
                 return {'success': True, 'message': 'Order não encontrada', 'error': None}
@@ -40,6 +55,12 @@ class OrderService:
             return {'success': True, 'message': 'Order desativada com sucesso', 'error': None}
 
     def select_orders(self, by_client: bool = False, client_id: int = None) -> dict:
+        """
+
+        :param by_client:
+        :param client_id:
+        :return:
+        """
         try:
             if by_client:
                 response = self.rep.select(table=self.table, filters=True, ClientID=client_id)

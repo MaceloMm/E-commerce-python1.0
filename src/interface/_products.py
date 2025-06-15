@@ -1,8 +1,11 @@
 from tkinter import ttk
 import customtkinter as tk
 from src._functions import fonts, format_price
+from src.services.product_service import ProductService
 from src.models._product import Product
 from src.interface._imagens import IMAGE_BACK
+
+ps = ProductService()
 
 
 class ScreenProduct(tk.CTkFrame):
@@ -27,7 +30,8 @@ class ScreenProduct(tk.CTkFrame):
         table.column("Preço", width=150, anchor="center")
         table.column("Estoque", width=75, anchor="center")
 
-        dados = Product.list_product()
+        # dados = Product.list_product()
+        dados = ps.list_products()
 
         for cl_id, nome, price, storage in dados:
             table.insert(

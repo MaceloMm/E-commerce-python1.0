@@ -4,12 +4,21 @@ import json
 
 
 class ClientService:
+    """
 
+    """
     def __init__(self):
         self.table = 'Client'
         self.rep = Repository()
 
     def check_client(self, client_id: int = None, by_email: bool = False, **kwargs) -> dict:
+        """
+
+        :param client_id:
+        :param by_email:
+        :param kwargs:
+        :return:
+        """
         try:
             if by_email:
                 response = self.rep.select(table=self.table, filters=True, ClientName=kwargs.get('email'))
@@ -23,6 +32,11 @@ class ClientService:
             return {'success': True, 'exists': True, 'error': None}
 
     def insert_client(self, client: Client) -> dict:
+        """
+
+        :param client:
+        :return:
+        """
         try:
             if self.check_client(by_email=True, email=client.email).get('exists'):
                 return {'success': True, 'message': 'Usuario já está cadastrado', 'error': None}
@@ -59,6 +73,12 @@ class ClientService:
             return {'success': True, 'message': 'Cliente desativado com sucesso', 'error': None}
 
     def update_product(self, client_id: int, **kwargs) -> dict:
+        """
+
+        :param client_id:
+        :param kwargs:
+        :return:
+        """
         try:
             if not self.check_client(client_id=client_id).get('exists'):
                 return {'success': True, 'message': 'Não encontramos o cliente com id informado', 'error': None}
