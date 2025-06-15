@@ -1,6 +1,7 @@
-from src._functions import check_email, set_time
+from src._functions import set_time
 from src._databases import DataBases
 import json
+from re import fullmatch
 
 """
 - Atributos: id, nome, email, endereco.
@@ -18,16 +19,43 @@ class Client:
 
     cursor = db.get_cursor
 
-    def __init__(self, name: str, email: str, adress: dict):
-        self.__name = name
-        if not check_email(email):
-            raise ValueError('Email invalido')
-        self.__email = email
-        self.__endereco = adress
+    def __init__(self, name: str, email: str, address: dict):
+        self.name = name
+        self.email = email
+        self.address = address
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @name.setter
+    def name(self, value: str):
+        if len(value.strip()) == 0:
+            raise ValueError('O nome não pode ficar vazio')
+        self.__name = value
+
+    @property
+    def email(self) -> str:
+        return self.__email
+
+    @email.setter
+    def email(self, value: str):
+        if not fullmatch(r'^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$', value):
+            raise ValueError('Email invalido favor informa no formato "example@example.com"')
+        self.__email = value
+
+    @property
+    def address(self):
+        return self.__address
+
+    @address.setter
+    def address(self, value: dict):
+        self.__address = value
+
 
     def insert_client(self) -> str:
 
-        if self.__name is None or self.__email is None or self.__endereco is None:
+        if self.name is None or self.email is None or self.address is None:
             raise ValueError('Dados do cliente invalidos!')
 
         emails = Client.cursor.execute(
@@ -36,7 +64,7 @@ class Client:
             """
         ).fetchall()
 
-        if self.__email in (i[0] for i in emails):
+        if self.email in (i[0] for i in emails):
             return 'Este email já foi cadastrado'
 
         creat_at = set_time()
@@ -46,8 +74,8 @@ class Client:
             INSERT into Client (ClientName, ClientEmail, ClientLocation, CreateAT, Alteration, Status) VALUES
             (?, ?, ?, ?, ?, ?);
             """, (
-                self.__name,
-                self.__email, json.dumps(self.__endereco),
+                self.name,
+                self.email, json.dumps(self.address),
                 creat_at,
                 creat_at,
                 True)
@@ -55,7 +83,7 @@ class Client:
 
         db.commit_changes()
 
-        return f'Usuário {self.__name} cadastrado com sucesso!'
+        return f'Usuário {self.name} cadastrado com sucesso!'
 
     @staticmethod
     def edit_client(clientid: int, new_name: str = None, new_email: str = None, new_adress: dict = None) -> str:
@@ -170,27 +198,11 @@ class Client:
 
         return name_client
 
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def get_email(self):
-        return self.__email
-
-    @property
-    def get_endereco(self):
-        return self.__endereco
-
-    @name.setter
-    def name(self, name):
-        self.__name = name
-
     def __str__(self):
-        return f'<Class.Client: {self.__name}>'
+        return f'<Class.Client: {self.name}>'
 
     def __repr__(self):
-        return f'<Class.Client: {self.__name}>'
+        return f'<Class.Client: {self.name}>'
 
 
 # Apenas para testes

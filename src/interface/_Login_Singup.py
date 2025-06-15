@@ -2,7 +2,7 @@ import customtkinter as tk
 from src._functions import fonts
 from tkinter import messagebox
 from typing import Union
-from src._users import User
+from src.models._users import User
 from src.interface._orders import OrderScreen
 from src.interface._gerencial import GeneralScreen
 from src.send_email import EmailBackendOnyx

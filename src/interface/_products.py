@@ -1,8 +1,8 @@
 from tkinter import ttk
 import customtkinter as tk
 from src._functions import fonts, format_price
-from src._product import Product
-from src.interface._imagens import IMAGE_BACK, IMAGE_ALTERAR, IMAGE_DELETE
+from src.models._product import Product
+from src.interface._imagens import IMAGE_BACK
 
 
 class ScreenProduct(tk.CTkFrame):

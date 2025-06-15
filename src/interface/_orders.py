@@ -1,7 +1,7 @@
 import customtkinter as tk
 from typing import Union, Callable
-from src._product import Product
-from src._client import Client
+from src.models._product import Product
+from src.models._client import Client
 from src.interface._imagens import IMAGE_BACK
 from src._functions import fonts
 

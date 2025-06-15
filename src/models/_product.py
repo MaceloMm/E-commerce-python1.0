@@ -20,14 +20,54 @@ class Product:
     cursor = db.get_cursor
 
     def __init__(self, name: str, price: int, quantity: int, category: str):
-        self.__name = name
-        self.__price = price
-        self.__quantity = quantity
-        self.__category = category
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+        self.category = category
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, value: str):
+        if not isinstance(value, str) or len(value.strip()) == 0:
+            raise ValueError('Nome não pode ficar vazio')
+        self.__name = value
+
+    @property
+    def price(self):
+        return self.__price
+
+    @price.setter
+    def price(self, value: int):
+        if value <= 0:
+            raise ValueError('O preço precisa ser maior que 0')
+        self.__price = value
+
+    @property
+    def quantity(self):
+        return self.__quantity
+
+    @quantity.setter
+    def quantity(self, value: int):
+        if value < 0:
+            raise ValueError('Quantidade tem que maior ou igual a 0')
+        self.__quantity = value
+
+    @property
+    def category(self):
+        return self.__category
+
+    @category.setter
+    def category(self, value: str):
+        if not isinstance(value, str) or len(value.strip()) == 0:
+            raise ValueError('Categoria não pode ficar vazio')
+        self.__category = value
 
     # Método está OK
     def add_product(self):
-        if self.__name is None or self.__price is None or self.__quantity is None or self.__category is None:
+        if self.name is None or self.price is None or self.quantity is None or self.category is None:
             raise ValueError("Dados do produto invalidos!")
         
         creat_at = set_time()
@@ -36,10 +76,10 @@ class Product:
             INSERT into Product (ProductName, ProductPrice, ProductQuantity, Category, CreateAT, Alteration, Status) VALUES
             (?, ?, ?, ?, ?, ?, ?);
             """, (
-                self.__name, 
-                self.__price, 
-                self.__quantity,
-                self.__category,
+                self.name,
+                self.price,
+                self.quantity,
+                self.category,
                 creat_at,
                 creat_at,
                 True)
@@ -47,7 +87,7 @@ class Product:
 
         db.commit_changes()
 
-        return f"Produto '{self.__name}' adicionado com sucesso!"
+        return f"Produto '{self.name}' adicionado com sucesso!"
 
     # Método está OK    
     @staticmethod

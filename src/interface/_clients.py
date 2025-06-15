@@ -1,6 +1,6 @@
 import json
-from src._client import Client
 import customtkinter as tk
+from src.services.client_services import ClientService
 from tkinter import messagebox
 from tkinter import ttk, Menu
 from json import loads
@@ -8,6 +8,7 @@ from src._functions import format_adress, get_cep_infos, fonts
 from src.interface._imagens import IMAGE_DELETE, IMAGE_BACK, IMAGE_ALTERAR, IMAGE_SINGUP
 
 client_id = 0
+client_service = ClientService()
 
 
 class ScreenClient(tk.CTkFrame):
@@ -34,7 +35,7 @@ class ScreenClient(tk.CTkFrame):
         table.column("CEP", width=75, anchor="center")
         table.column("Rua", width=75, anchor="center")
 
-        dados = Client.list_client()
+        dados = client_service.list_client()
 
         for cl_id, nome, email, endereco, status in dados:
             endereco = loads(endereco)
@@ -168,7 +169,7 @@ class RegisterClientScreen(tk.CTkFrame):
             if endereco_incompleto != 'CEP invalido!':
                 adress = format_adress(endereco_incompleto, numero)
                 try:
-                    cl = Client(name, email, adress)
+                    cl = client_service.insert_client(name, email, adress)
                 except ValueError as err:
                     messagebox.showerror('Info', message=str(err))
                 else:
