@@ -66,15 +66,18 @@ def get_cep_infos(cep: str) -> Union[str, dict]:
     url = f'https://viacep.com.br/ws/{cep}/json/'
 
     response = requests.get(url)
-    adress = response.json()
+    if response.status_code != 200:
+        return 'CEP invalido!'
 
-    if response.status_code != 200 or 'erro' in adress:
+    address = response.json()
+
+    if 'erro' in address:
         return 'CEP invalido!'
 
     for i in exclude_itens:
-        adress.pop(i)
+        address.pop(i)
 
-    return adress
+    return address
 
 
 def fonts():

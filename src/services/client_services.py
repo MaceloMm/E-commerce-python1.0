@@ -13,11 +13,13 @@ class ClientService:
 
     def check_client(self, client_id: int = None, by_email: bool = False, **kwargs) -> dict:
         """
+        Função responsavel por verificar se um cadastro existe dentro do banco.
 
-        :param client_id:
-        :param by_email:
-        :param kwargs:
-        :return:
+        :param client_id: Recebe o id para realizar a consulta no banco.
+        :param by_email: Informa True caso queira realizar a verificação através do email do cliente.
+        :param kwargs: informa o argumento email='Exemplo' para realizar a verificação se o email existe no banco.
+        :return: Retorna uma resposta informando se houve sucesso na consulta e se existe ou não o cliente, através de
+        um dicionario.
         """
         try:
             if by_email:
@@ -40,7 +42,7 @@ class ClientService:
         try:
             if self.check_client(by_email=True, email=client.email).get('exists'):
                 return {'success': True, 'message': 'Usuario já está cadastrado', 'error': None}
-            self.rep.insert(table=self.table, values=[client.name, client.email, json.dumps(client.address)])
+            self.rep.insert(table=self.table, values=[client.name, client.email, client.address])
         except Exception as err:
             return {'success': False, 'message': 'Ocorreu um erro ao inserir o usuario', 'error': err}
         else:
@@ -72,7 +74,7 @@ class ClientService:
         else:
             return {'success': True, 'message': 'Cliente desativado com sucesso', 'error': None}
 
-    def update_product(self, client_id: int, **kwargs) -> dict:
+    def update_client(self, client_id: int, **kwargs) -> dict:
         """
 
         :param client_id:
@@ -91,10 +93,7 @@ class ClientService:
 
 if __name__ == '__main__':
     cs = ClientService()
-    cli = Client('Macelo', 'macelo@macelo.com',
-                {'cep': '06326-455', 'logradouro': 'Rua Tatuí', 'bairro': 'Conjunto Habitacional Presidente Castelo Branco',
-                  'localidade': 'Carapicuíba', 'uf': 'SP', 'estado': 'São Paulo'})
-    cs.insert_client(cli)
+    print(cs.list_client(ClientID=1).get('data')[0][1])
     #print(cs.update_product(client_id=1, ClientName='Macelo Augusto'))
     #print(cs.disable_client(client_id=1))
     #print(cs.list_client(ClientEmail='macelo@macelo.com'))

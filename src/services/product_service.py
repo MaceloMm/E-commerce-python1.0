@@ -11,11 +11,13 @@ class ProductService:
 
     def check_product(self, product_id: int = None, by_name: bool = False, **kwargs) -> dict:
         """
+        Função responsavel por verificar se um cadastro existe dentro do banco.
 
-        :param product_id:
-        :param by_name:
-        :param kwargs:
-        :return:
+        :param product_id: Recebe o id para realizar a consulta no banco.
+        :param by_name: informa True caso queira realizar a consulta pelo o nome.
+        :param kwargs: informa o argumento name='Exemplo' para verificar se o nome existe no banco.
+        :return: Retorna uma resposta informando se houve sucesso na consulta e se existe ou não o cliente, através de
+        um dicionario.
         """
         try:
             if by_name:
@@ -42,9 +44,7 @@ class ProductService:
         except Exception as err:
             return {'success': False, 'message': 'Ocorreu um erro ao inserir o produto', 'error': err}
         else:
-            if response:
-                return {'success': True, 'message': 'Produto cadastrado com sucesso', 'error': None}
-            return {'success': False, 'message': 'Ocorreu um erro', 'error': None}
+            return {'success': True, 'message': 'Produto cadastrado com sucesso', 'error': None}
 
     def list_products(self, **kwargs) -> dict:
         """
@@ -60,7 +60,7 @@ class ProductService:
         except Exception as err:
             return {'success': False, 'message': 'correu um erro ao consultar o banco', 'error': err}
         else:
-            return {'success': True, 'prod': response, 'error': None}
+            return {'success': True, 'data': response if response else [], 'error': None}
 
     def disable_product(self, product_id: int):
         """

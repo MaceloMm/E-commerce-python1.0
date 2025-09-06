@@ -50,8 +50,11 @@ class Client:
 
     @address.setter
     def address(self, value: dict):
-        self.__address = value
+        self.__address = json.dumps(value)
 
+    @property
+    def dict_address(self):
+        return json.loads(self.__address)
 
     def insert_client(self) -> str:
 

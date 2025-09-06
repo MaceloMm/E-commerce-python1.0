@@ -13,9 +13,11 @@ class OrderService:
 
     def check_order(self, order_id) -> dict:
         """
+        Função responsavel por verificar se um cadastro existe dentro do banco.
 
-        :param order_id:
-        :return:
+        :param order_id: Recebe o id para realizar a consulta no banco.
+        :return: Retorna uma resposta informando se houve sucesso na consulta e se existe ou não o cliente, através de
+        um dicionario.
         """
         try:
             response = self.rep.select(table=self.table, filters=True, OrderID=order_id)

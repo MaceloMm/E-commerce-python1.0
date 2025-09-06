@@ -1,6 +1,7 @@
 import json
 import customtkinter as tk
 from src.services.client_services import ClientService
+from src.models._client import Client
 from tkinter import messagebox
 from tkinter import ttk, Menu
 from json import loads
@@ -35,9 +36,9 @@ class ScreenClient(tk.CTkFrame):
         table.column("CEP", width=75, anchor="center")
         table.column("Rua", width=75, anchor="center")
 
-        dados = client_service.list_client()
+        dados = client_service.list_client().get('data')
 
-        for cl_id, nome, email, endereco, status in dados:
+        for cl_id, nome, email, endereco in dados:
             endereco = loads(endereco)
             table.insert(
                 "", tk.END, values=(
@@ -166,16 +167,18 @@ class RegisterClientScreen(tk.CTkFrame):
                 return None
 
             endereco_incompleto = get_cep_infos(cep)
-            if endereco_incompleto != 'CEP invalido!':
-                adress = format_adress(endereco_incompleto, numero)
+            print(endereco_incompleto)
+            if endereco_incompleto != 'CEP invalido!' and len(endereco_incompleto) != 0:
+                address = format_adress(endereco_incompleto, numero)
                 try:
-                    cl = client_service.insert_client(name, email, adress)
+                    response = client_service.insert_client(Client(name=name, email=email, address=address))
                 except ValueError as err:
                     messagebox.showerror('Info', message=str(err))
                 else:
-                    cl.insert_client()
-                    cl = None
-                    messagebox.showinfo('Info', message='Cliente cadastrado com Sucesso!')
+                    if response.get('success'):
+                        messagebox.showinfo('Info', message=response.get('message'))
+                    else:
+                        messagebox.showerror('Error', message=response.get('message'))
                     master.show_frame(ScreenClient)
             else:
                 messagebox.showerror('Info', message=endereco_incompleto)
@@ -190,8 +193,8 @@ class AlterationClientScreen(tk.CTkFrame):
 
         b_font, t_font, f_font = fonts()
 
-        client_dados = list(Client.search_client(client_id, dados=True))[0]
-        client_dados = Client(client_dados[0], client_dados[1], json.loads(client_dados[2]))
+        client_dados = client_service.list_client(ClientID=client_id).get('data')[0]
+        client_dados = Client(client_dados[1], client_dados[2], json.loads(client_dados[3]))
 
         text_principal = tk.CTkLabel(self, text='Alteração de cadastro!', font=tk.CTkFont('Arial', 20, 'bold'))
         text_principal.grid(row=0, column=0, columnspan=9, pady=15)
@@ -202,19 +205,19 @@ class AlterationClientScreen(tk.CTkFrame):
         entry_client_name = tk.CTkEntry(self, width=290)
         entry_client_name.grid(row=2, column=0, columnspan=2, pady=5, sticky='w')
 
-        label_client_email = tk.CTkLabel(self, text=f'Email atual: {client_dados.get_email}', font=f_font)
+        label_client_email = tk.CTkLabel(self, text=f'Email atual: {client_dados.email}', font=f_font)
         label_client_email.grid(row=3, column=0, pady=10, columnspan=2, sticky='w',)
 
         entry_client_email = tk.CTkEntry(self, width=290)
         entry_client_email.grid(row=4, column=0, pady=5, sticky='w', columnspan=2)
 
-        label_client_cep = tk.CTkLabel(self, text=f'CEP atual: {client_dados.get_endereco['cep']}', font=f_font)
+        label_client_cep = tk.CTkLabel(self, text=f'CEP atual: {client_dados.dict_address['cep']}', font=f_font)
         label_client_cep.grid(row=5, column=0, pady=10, sticky='w')
 
         entry_client_cep = tk.CTkEntry(self)
         entry_client_cep.grid(row=6, column=0, pady=5, sticky='w')
 
-        label_client_num = tk.CTkLabel(self, text=f'Numero atual: {client_dados.get_endereco['numero']}', font=f_font)
+        label_client_num = tk.CTkLabel(self, text=f'Numero atual: {client_dados.dict_address['numero']}', font=f_font)
         label_client_num.grid(row=5, column=1, pady=10, sticky='w', padx=5)
 
         entry_client_num = tk.CTkEntry(self)
@@ -253,15 +256,17 @@ class AlterationClientScreen(tk.CTkFrame):
 
             new_name = new_name if new_name != '' else None
             new_email = new_email if new_email != '' else None
-            new_adress = None
+            new_address = None
 
             if new_cep != '' and new_num != '':
                 try:
-                    new_adress = format_adress(get_cep_infos(new_cep), new_num)
+                    new_address = format_adress(get_cep_infos(new_cep), new_num)
                 except ValueError:
-                    new_adress = None
+                    new_address = None
 
-            msg = Client.edit_client(client_id, new_name, new_email, new_adress)
+            msg = client_service.update_client(client_id, ClientName=new_name, ClientEmail=new_email,
+                                               ClientLocation=new_address).get('message')
+
             messagebox.showinfo('Info', msg)
             client_id = 0
             master.show_frame(ScreenClient)
@@ -280,7 +285,7 @@ class DeleteClientScreen(tk.CTkFrame):
         b_font, t_font, f_font = fonts()
 
         global client_id
-        name_client = Client.search_client(client_id)
+        name_client = client_service.list_client(ClientID=client_id).get('data')[0][1]
 
         label = tk.CTkLabel(self, text=f'Tem certeza que deseja deletar o cliente "{name_client}"?')
         label.grid(row=0, column=0, columnspan=2, pady=15)
@@ -295,7 +300,7 @@ class DeleteClientScreen(tk.CTkFrame):
 
         def delete_client(c_id, master):
             global client_id
-            msg = Client.delete_client(c_id)
+            msg = client_service.disable_client(client_id=c_id).get('message')
             messagebox.showinfo('Info', message=msg)
             client_id = 0
             master.show_frame(ScreenClient)

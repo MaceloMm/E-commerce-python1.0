@@ -19,7 +19,7 @@ class Product:
 
     cursor = db.get_cursor
 
-    def __init__(self, name: str, price: int, quantity: int, category: str):
+    def __init__(self, name: str, price: float, quantity: int, category: str):
         self.name = name
         self.price = price
         self.quantity = quantity
@@ -40,7 +40,7 @@ class Product:
         return self.__price
 
     @price.setter
-    def price(self, value: int):
+    def price(self, value: float):
         if value <= 0:
             raise ValueError('O preço precisa ser maior que 0')
         self.__price = value

@@ -48,7 +48,7 @@ class Application(tk.CTk):
 
         self.current_frame = None
 
-        self.show_frame(FirstScreen)
+        self.show_frame(GeneralScreen)
 
         b_font, f_font, t_font = fonts()
 
