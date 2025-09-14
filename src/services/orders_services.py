@@ -1,5 +1,3 @@
-from mypy.stubutil import report_missing
-
 from src.repository.actions import Repository
 from src.models._order import Order
 import json

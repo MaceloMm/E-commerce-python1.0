@@ -2,6 +2,7 @@ import customtkinter as tk
 from src.interface._clients import ScreenClient
 from src._functions import fonts
 from src.interface._products import ScreenProduct
+from src.interface._orders import OrderScreen
 from src.interface._imagens import IMAGE_BACK, IMAGE_ORDER, IMAGE_PRODUCT, IMAGE_GERENCIAL
 
 
@@ -23,7 +24,8 @@ class GeneralScreen(tk.CTkFrame):
                                        command=lambda: master.show_frame(ScreenProduct), image=IMAGE_PRODUCT)
         button_products.grid(pady=15, column=0, row=2)
 
-        button_order = tk.CTkButton(self, text='Realizar pedidos', font=b_font, width=250, height=30, image=IMAGE_ORDER)
+        button_order = tk.CTkButton(self, text='Realizar pedidos', font=b_font, width=250, height=30, image=IMAGE_ORDER,
+                                    command=lambda: master.show_frame(OrderScreen))
         button_order.grid(pady=15, column=0, row=3)
 
         button_relatory = tk.CTkButton(self, text='Relatorios', font=b_font, width=250, height=30)
