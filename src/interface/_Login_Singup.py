@@ -182,6 +182,8 @@ class LoginScreen(tk.CTkFrame):
         elif st[0] and st[1] == 'gerente':
             master.show_frame(GeneralScreen)
 
+        return None
+
 
 class RecoverPassword(tk.CTkFrame):
 
